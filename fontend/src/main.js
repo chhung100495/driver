@@ -1,4 +1,6 @@
 import Vue from 'vue'
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 import './plugins/bootstrap-vue'
 import App from './App.vue'
 import router from './router'
@@ -13,6 +15,7 @@ const rulesPlugin = ({ Validator }) => {
 VeeValidate.use(rulesPlugin);
 
 Vue.config.productionTip = false
+Vue.use(ElementUI)
 
 new Vue({
   router,
