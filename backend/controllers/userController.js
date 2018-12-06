@@ -55,7 +55,7 @@ router.post('/login', (req, res) => {
                     user: userEntity
                 }
                 var acToken = jwt.sign(payload, config.accessTokenSecret, {
-                    expiresIn: config.accessTokenLife // seconds
+                    expiresIn: '24h' // seconds
                 });
 
                 var rfToken = jwt.sign(payload, config.refreshTokenSecret, {

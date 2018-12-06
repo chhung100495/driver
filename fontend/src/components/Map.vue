@@ -1,42 +1,46 @@
 <template lang="html">
-  <div style="position: relative">
-    <gmap-map
-      id="map"
-      :center="center"
-      :zoom="16"
-      ref="gmap"
-      :options="options"
-      map-type-id="terrain">
-      <gmap-marker ref="markers" :position="center" :draggable="true" @drag="updateCoordinates">
-      </gmap-marker>
-    </gmap-map>
-    <div class="container">
-      <el-card style="margin-top: 10px;">
-        <div class="row">
-          <div class="col-md-12">
-            <el-steps :active="1" align-center>
-              <el-step title="ĐÓN KHÁCH" description="Tên khách hàng"></el-step>
-              <el-step title="TRẢ KHÁCH" description="Tên khách hàng"></el-step>
-            </el-steps>
+  <div>
+    <div v-if="true">
+      <NavigationBar/>
+      <div class="">
+        <div style="position: relative">
+          <gmap-map
+            id="map"
+            :center="center"
+            :zoom="16"
+            ref="gmap"
+            :options="options"
+            map-type-id="terrain">
+            <gmap-marker ref="markers" :position="center" :draggable="true" @drag="updateCoordinates">
+            </gmap-marker>
+          </gmap-map>
+          <div class="container">
+            <InfoBar />
+          </div>
+
+          <div class="footer-bar" >
+            <FooterBar />
           </div>
         </div>
-        <hr>
-        <div class="row ">
-          <div class="col-md-8 mt-2">
-            <span>123 TRẦN HƯNG ĐẠO, PHƯỜNG 1, QUẬN 8, TPHCM</span>
-          </div>
-          <div class="col-md-4 mt-2">
-            <el-button icon="el-icon-news" type="danger" round>Chỉ đường</el-button>
-          </div>
-        </div>
-      </el-card>
+      </div>
     </div>
+
+    <div v-if="false">
+      <RequestWindow />
+    </div>
+
   </div>
+
 </template>
 
 <script>
-import Vue from 'vue'
+  import Vue from 'vue'
+  import NavigationBar from '@/components/NavigationBar.vue'
+  import InfoBar from '@/components/InfoBar.vue'
+  import FooterBar from '@/components/FooterBar.vue'
+  import RequestWindow from '@/components/RequestWindow.vue'
   import * as VueGoogleMaps from 'vue2-google-maps'
+
   Vue.use(VueGoogleMaps, {
     load: {
       key: "AIzaSyBkwRNAhT2ic6ZMR3i10ms51YhUJGHTXaQ",
@@ -45,6 +49,12 @@ import Vue from 'vue'
   })
   export default {
     props: ['request'],
+    components: {
+      NavigationBar,
+      InfoBar,
+      FooterBar,
+      RequestWindow
+    },
     data () {
       return {
         state4: '',
@@ -175,5 +185,18 @@ import Vue from 'vue'
     top: 10px;
     left: 0px;
     z-index: 99;
+    height: 100%;
   }
+
+  .footer-bar {
+    margin: 0 auto;
+    width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+    position: absolute;
+    bottom: 10px;
+    left: 0px;
+    z-index: 99;
+  }
+
 </style>
