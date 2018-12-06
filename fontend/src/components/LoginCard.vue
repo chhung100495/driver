@@ -3,6 +3,13 @@
         <div class="card-header text-white bg-dark">Driver System</div>
         <div class="card-body">
             <form>
+                <div class="form-group row" style="margin-bottom: auto">
+                    <div class="col-sm-12 col-md-12">
+                        <b-alert class="text-left mb-3" :show="error.show" variant="danger">
+                            <span>{{ error.msg }}</span>
+                        </b-alert>
+                    </div>
+                </div>
                 <div class="form-group row">
                     <div class="col-sm-12 col-md-12">
                         <i class="fas fa-user"></i>
@@ -59,6 +66,9 @@
                 'usernameIconClass': '',
                 'passwordIconClass': ''
             }
+        },
+        props: {
+           error: Object
         },
         mounted() {
             var self = this;

@@ -19,7 +19,11 @@ exports.addNewRefreshToken = (userEntity, rfToken) => {
 }
 
 exports.checkRefreshToken = (userEntity, rfToken) => {
-    console.log(userEntity.Username)
     var sql = `SELECT * FROM users WHERE Username = '${userEntity.Username}' AND Password = '${userEntity.Password}' AND RefreshToken = '${rfToken}'`;
+    return db.load(sql);
+}
+
+exports.checkUsernameAvailability = (userEntity) => {
+    var sql = `SELECT * FROM users WHERE Username = '${userEntity.Username}'`;
     return db.load(sql);
 }

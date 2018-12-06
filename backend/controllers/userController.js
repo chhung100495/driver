@@ -8,11 +8,35 @@ var middlewares = require('../fn/middlewares');
 var router = express.Router();
 
 router.post('/register', (req, res) => {
-    userRepo.add(req.body)
-        .then(value => {
-            console.log(value);
-            res.statusCode = 201;
-            res.json(req.body);
+    userRepo.checkUsernameAvailability(req.body)
+        .then(rows => {
+            if (rows.length > 0) {
+                res.json({
+                    success: false,
+                    msg: "Username already exists"
+                })
+
+                return {
+                    "availability": false
+                }
+            } else {
+                return {
+                    "availability": true
+                }
+            }
+        })
+        .then(info => {
+            if(info.availability === true) {
+                return userRepo.add(req.body)
+                    .then(value => {
+                        console.log(value);
+                        res.statusCode = 201;
+                        res.json({
+                            success: true,
+                            msg: "Registration successful"
+                        });
+                    })
+            }
         })
         .catch(err => {
             console.log(err);
@@ -39,6 +63,7 @@ router.post('/login', (req, res) => {
                 });
 
                 return {
+                    "auth": true,
                     "userEntity": userEntity,
                     "acToken": acToken,
                     "rfToken": rfToken
@@ -47,19 +72,25 @@ router.post('/login', (req, res) => {
                 res.json({
                     auth: false
                 })
+
+                return {
+                    "auth": false
+                }
             }
         })
         .then(info => {
-            // store refresh token into database
-            return userRepo.addNewRefreshToken(info.userEntity, info.rfToken)
-                .then(value => {
-                    console.log(value);
-                    res.json({
-                        auth: true,
-                        access_token: info.acToken,
-                        refresh_token: info.rfToken
+            if(info.auth === true) {
+                // store refresh token into database
+                return userRepo.addNewRefreshToken(info.userEntity, info.rfToken)
+                    .then(value => {
+                        console.log(value);
+                        res.json({
+                            auth: true,
+                            access_token: info.acToken,
+                            refresh_token: info.rfToken
+                        })
                     })
-                })
+            }
         })
         .catch(err => {
             console.log(err);

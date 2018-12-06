@@ -12,6 +12,7 @@ var app = express();
 app.use(morgan('dev'));
 app.use(cors());
 app.use(bodyParser.json());
+app.use(bodyParser.json({ type: 'application/*' }));
 
 app.get('/', middlewares.verifyAccessToken, (req, res) => {
     res.json({

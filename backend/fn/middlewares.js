@@ -37,7 +37,6 @@ var middlewares = {
                     });
                 } else {
                     req.payload = payload;
-                    console.log(req.payload)
                     req.rfToken = token;
                     next();
                 }

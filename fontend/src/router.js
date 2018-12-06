@@ -7,7 +7,7 @@ import Register from '@/views/Register.vue'
 
 Vue.use(Router)
 
-export default new Router({
+var router = new Router({
   routes: [
     {
       path: '/',
@@ -29,3 +29,23 @@ export default new Router({
     // }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    var token = localStorage.access_token;
+    if (typeof token === 'undefined') {
+      next({
+        path: '/login',
+        query: {
+          redirect: to.fullPath
+        }
+      })
+    } else {
+      next()
+    }
+  } else {
+    next() // make sure to always call next()!
+  }
+})
+
+export default router;
