@@ -2,15 +2,15 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/views/Login.vue'
 import Register from '@/views/Register.vue'
-// import Home from './views/Home.vue'
-// import Map from './components/Map.vue'
+import Home from './views/Home.vue'
+import RequestWindow from './components/RequestWindow.vue'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/login',
       name: 'login',
       component: Login
     },
@@ -19,6 +19,11 @@ export default new Router({
       name: 'register',
       component: Register
     },
+    {
+      path: '/',
+      name: 'home',
+      component: Home
+    }
     // {
     //   path: '/about',
     //   name: 'about',
