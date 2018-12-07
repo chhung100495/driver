@@ -125,7 +125,7 @@
             checkUsernameValidation() {
                 var keyCode = event.keyCode || event.which
                 var self = this;
-                if ((keyCode != 9 && this.$refs.txtUsername.value) || keyCode == 8 || event.target.name === 'btnRegister') {
+                if ((keyCode != 9 && this.$refs.txtUsername.value) || keyCode == 13 || keyCode == 8 || event.target.name === 'btnRegister') {
                     if (!self.$validator.errors.has('username')) {
                         self.usernameClass = 'border border-success';
                         self.usernameIconClass = 'fas fa-check text-success';
@@ -139,7 +139,7 @@
             checkPasswordValidation() {
                 var keyCode = event.keyCode || event.which
                 var self = this;
-                if ((keyCode != 9 && this.$refs.txtUsername.value) || keyCode == 8 || event.target.name === 'btnRegister') {
+                if ((keyCode != 9 && this.$refs.txtUsername.value) || keyCode == 13 || keyCode == 8 || event.target.name === 'btnRegister') {
                     if (!self.$validator.errors.has('password')) {
                         self.passwordClass = 'border border-success';
                         self.passwordIconClass = 'fas fa-check text-success';
@@ -153,7 +153,7 @@
             checkRetypeValidation() {
                 var keyCode = event.keyCode || event.which
                 var self = this;
-                if ((keyCode != 9 && this.$refs.txtUsername.value) || keyCode == 8 || event.target.name === 'btnRegister') {
+                if ((keyCode != 9 && this.$refs.txtUsername.value) || keyCode == 13 || keyCode == 8 || event.target.name === 'btnRegister') {
                     if (!self.$validator.errors.has('retype')) {
                         self.retypeClass = 'border border-success';
                         self.retypeIconClass = 'fas fa-check text-success';
