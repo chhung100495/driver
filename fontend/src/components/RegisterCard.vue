@@ -16,7 +16,7 @@
                         <input type="text"
                             class="form-control"
                             ref="txtUsername"
-                            @keyup="checkUsernameValidation($event)"
+                            @keyup="checkUsernameValidation"
                             v-validate="'required'"
                             v-bind:class="usernameClass"
                             name="username"
@@ -32,7 +32,7 @@
                         <input type="password"
                             class="form-control"
                             ref="txtPassword"
-                            @keyup="checkPasswordValidation($event)"
+                            @keyup="checkPasswordValidation"
                             v-validate="'required'"
                             v-bind:class="passwordClass"
                             name="password"
@@ -47,7 +47,7 @@
                         <input type="password"
                             class="form-control"
                             ref="txtRetype"
-                            @keyup="checkRetypeValidation($event)"
+                            @keyup="checkRetypeValidation"
                             v-validate="'required|confirmed:txtPassword'"
                             v-bind:class="retypeClass"
                             name="retype"
@@ -58,7 +58,7 @@
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-12 col-md-12">
-                        <button ref="btnRegister" @click.prevent="handleSubmit($event)" class="btn btn-outline-primary float-right">Đăng ký</button>
+                        <button ref="btnRegister" name="btnRegister" @click.prevent="handleSubmit" class="btn btn-outline-primary float-right">Đăng ký</button>
                         <router-link to="/login" tag="button" class="btn btn-outline-warning float-right mr-2">Hủy</router-link>
                     </div>
                 </div>
@@ -98,12 +98,12 @@
             window.removeEventListener('keydown', self.onEnter);
         },
         methods: {
-            onEnter(event){
+            onEnter(){
                 var self = this;
                 if(event.keyCode === 13)
                    self.$refs.btnRegister.click();
             },
-            handleSubmit(event) {
+            handleSubmit() {
                 var self = this;
                 self.focused = true;
                 self.$validator.validate().then(result => {
@@ -116,16 +116,16 @@
                         }
                         self.$emit('registerCredentials', credentials)
                     } else {
-                        self.checkUsernameValidation(event);
-                        self.checkPasswordValidation(event);
-                        self.checkRetypeValidation(event);
+                        self.checkUsernameValidation();
+                        self.checkPasswordValidation();
+                        self.checkRetypeValidation();
                     }
                 });
             },
-            checkUsernameValidation(event) {
+            checkUsernameValidation() {
                 var keyCode = event.keyCode || event.which
                 var self = this;
-                if ((keyCode != 9 && this.$refs.txtUsername.value) || keyCode == 8) {
+                if ((keyCode != 9 && this.$refs.txtUsername.value) || keyCode == 8 || event.target.name === 'btnRegister') {
                     if (!self.$validator.errors.has('username')) {
                         self.usernameClass = 'border border-success';
                         self.usernameIconClass = 'fas fa-check text-success';
@@ -136,10 +136,10 @@
                     return
                 }
             },
-            checkPasswordValidation(event) {
+            checkPasswordValidation() {
                 var keyCode = event.keyCode || event.which
                 var self = this;
-                if ((keyCode != 9 && this.$refs.txtUsername.value) || keyCode == 8) {
+                if ((keyCode != 9 && this.$refs.txtUsername.value) || keyCode == 8 || event.target.name === 'btnRegister') {
                     if (!self.$validator.errors.has('password')) {
                         self.passwordClass = 'border border-success';
                         self.passwordIconClass = 'fas fa-check text-success';
@@ -150,10 +150,10 @@
                     return
                 }
             },
-            checkRetypeValidation(event) {
+            checkRetypeValidation() {
                 var keyCode = event.keyCode || event.which
                 var self = this;
-                if ((keyCode != 9 && this.$refs.txtUsername.value) || keyCode == 8) {
+                if ((keyCode != 9 && this.$refs.txtUsername.value) || keyCode == 8 || event.target.name === 'btnRegister') {
                     if (!self.$validator.errors.has('retype')) {
                         self.retypeClass = 'border border-success';
                         self.retypeIconClass = 'fas fa-check text-success';

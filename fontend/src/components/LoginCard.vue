@@ -16,7 +16,7 @@
                         <input type="text"
                             class="form-control"
                             ref="txtUsername"
-                            @keyup="checkUsernameValidation($event)"
+                            @keyup="checkUsernameValidation"
                             v-validate="'required'"
                             v-bind:class="usernameClass"
                             name="username"
@@ -32,7 +32,7 @@
                         <input type="password"
                             class="form-control"
                             ref="txtPassword"
-                            @keyup="checkPasswordValidation($event)"
+                            @keyup="checkPasswordValidation"
                             v-validate="'required'"
                             v-bind:class="passwordClass"
                             name="password"
@@ -43,7 +43,7 @@
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-12 col-md-12">
-                        <button ref="btnLogin" @click.prevent="handleSubmit($event)" class="btn btn-outline-primary float-right">Đăng nhập</button>
+                        <button ref="btnLogin" name="btnLogin" @click.prevent="handleSubmit" class="btn btn-outline-primary float-right">Đăng nhập</button>
                     </div>
                 </div>
                 <hr/>
@@ -79,12 +79,12 @@
             window.removeEventListener('keydown', self.onEnter);
         },
         methods: {
-            onEnter(event){
+            onEnter(){
                 var self = this;
                 if(event.keyCode === 13)
                    self.$refs.btnLogin.click();
             },
-            handleSubmit(event) {
+            handleSubmit() {
                 var self = this;
                 self.$validator.validate().then(result => {
                     if (result) {
@@ -96,15 +96,15 @@
                         }
                         self.$emit('loginCredentials', credentials)
                     } else {
-                        self.checkUsernameValidation(event);
-                        self.checkPasswordValidation(event);
+                        self.checkUsernameValidation();
+                        self.checkPasswordValidation();
                     }
                 });
             },
             checkUsernameValidation() {
                 var keyCode = event.keyCode || event.which
                 var self = this;
-                if ((keyCode != 9 && this.$refs.txtUsername.value) || keyCode == 8) {
+                if ((keyCode != 9 && this.$refs.txtUsername.value) || keyCode == 8 || event.target.name === 'btnLogin') {
                     if (!self.$validator.errors.has('username')) {
                         self.usernameClass = 'border border-success';
                         self.usernameIconClass = 'fas fa-check text-success';
@@ -118,7 +118,7 @@
             checkPasswordValidation() {
                 var keyCode = event.keyCode || event.which
                 var self = this;
-                if ((keyCode != 9 && this.$refs.txtUsername.value) || keyCode == 8) {
+                if ((keyCode != 9 && this.$refs.txtUsername.value) || keyCode == 8 || event.target.name === 'btnLogin') {
                     if (!self.$validator.errors.has('password')) {
                         self.passwordClass = 'border border-success';
                         self.passwordIconClass = 'fas fa-check text-success';
