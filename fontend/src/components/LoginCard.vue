@@ -103,8 +103,8 @@
             },
             checkUsernameValidation() {
                 var keyCode = event.keyCode || event.which
-                if (keyCode != 9) {
-                    var self = this;
+                var self = this;
+                if ((keyCode != 9 && this.$refs.txtUsername.value) || keyCode == 8) {
                     if (!self.$validator.errors.has('username')) {
                         self.usernameClass = 'border border-success';
                         self.usernameIconClass = 'fas fa-check text-success';
@@ -117,8 +117,8 @@
             },
             checkPasswordValidation() {
                 var keyCode = event.keyCode || event.which
-                if (keyCode != 9) {
-                    var self = this;
+                var self = this;
+                if ((keyCode != 9 && this.$refs.txtUsername.value) || keyCode == 8) {
                     if (!self.$validator.errors.has('password')) {
                         self.passwordClass = 'border border-success';
                         self.passwordIconClass = 'fas fa-check text-success';

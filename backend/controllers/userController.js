@@ -39,13 +39,11 @@ router.post('/register', (req, res) => {
             }
         })
         .catch(err => {
-            console.log(err);
-            res.statusCode = 500;
-            res.end('View error log on server console');
+            next(err)
         })
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', (req, res, next) => {
     userRepo.login(req.body)
         .then(rows => {
             if (rows.length > 0) {
@@ -55,7 +53,7 @@ router.post('/login', (req, res) => {
                     user: userEntity
                 }
                 var acToken = jwt.sign(payload, config.accessTokenSecret, {
-                    expiresIn: '24h' // seconds
+                    expiresIn: config.accessTokenLife // seconds
                 });
 
                 var rfToken = jwt.sign(payload, config.refreshTokenSecret, {
@@ -93,9 +91,7 @@ router.post('/login', (req, res) => {
             }
         })
         .catch(err => {
-            console.log(err);
-            res.statusCode = 500;
-            res.end('View error log on server console');
+            next(err)
         })
 });
 
@@ -123,9 +119,7 @@ router.post('/refresh', middlewares.verifyRefreshToken, (req, res) => {
             }
         })
         .catch(err => {
-            console.log(err);
-            res.statusCode = 500;
-            res.end('View error log on server console');
+            next(err)
         })
 });
 

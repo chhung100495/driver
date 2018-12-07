@@ -59,7 +59,7 @@
                 <div class="form-group row">
                     <div class="col-sm-12 col-md-12">
                         <button ref="btnRegister" @click.prevent="handleSubmit($event)" class="btn btn-outline-primary float-right">Đăng ký</button>
-                        <router-link to="/" tag="button" class="btn btn-outline-warning float-right mr-2">Hủy</router-link>
+                        <router-link to="/login" tag="button" class="btn btn-outline-warning float-right mr-2">Hủy</router-link>
                     </div>
                 </div>
             </form>
@@ -124,8 +124,8 @@
             },
             checkUsernameValidation(event) {
                 var keyCode = event.keyCode || event.which
-                if (keyCode != 9) {
-                    var self = this;
+                var self = this;
+                if ((keyCode != 9 && this.$refs.txtUsername.value) || keyCode == 8) {
                     if (!self.$validator.errors.has('username')) {
                         self.usernameClass = 'border border-success';
                         self.usernameIconClass = 'fas fa-check text-success';
@@ -138,8 +138,8 @@
             },
             checkPasswordValidation(event) {
                 var keyCode = event.keyCode || event.which
-                if (keyCode != 9) {
-                    var self = this;
+                var self = this;
+                if ((keyCode != 9 && this.$refs.txtUsername.value) || keyCode == 8) {
                     if (!self.$validator.errors.has('password')) {
                         self.passwordClass = 'border border-success';
                         self.passwordIconClass = 'fas fa-check text-success';
@@ -152,8 +152,8 @@
             },
             checkRetypeValidation(event) {
                 var keyCode = event.keyCode || event.which
-                if (keyCode != 9) {
-                    var self = this;
+                var self = this;
+                if ((keyCode != 9 && this.$refs.txtUsername.value) || keyCode == 8) {
                     if (!self.$validator.errors.has('retype')) {
                         self.retypeClass = 'border border-success';
                         self.retypeIconClass = 'fas fa-check text-success';

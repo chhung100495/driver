@@ -27,7 +27,7 @@
         methods: {
             checkCredentials(args) {
                 var self = this;
-                var url = 'http://localhost:3000/users/login';
+                var url = 'http://localhost:3003/users/login';
                 var objToPost = {
                     Username: args.username,
                     Password: args.password
@@ -43,7 +43,9 @@
                         if(res.status === 200 && res.data.auth === true) {
                             self.error.show = false;
                             self.error.msg = "Đăng nhập thành công.";
-
+                            localStorage.access_token = res.data.access_token;
+                            localStorage.refresh_token = res.data.refresh_token;
+                            self.$router.push('/home');
                         } else {
                             self.error.show = true;
                             self.error.msg = "Đăng nhập thất bại.";
@@ -60,4 +62,7 @@
 </script>
 
 <style scoped>
+    .container-fluid {
+        margin-top: 60px;
+    }
 </style>

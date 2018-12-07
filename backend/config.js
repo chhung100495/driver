@@ -3,11 +3,11 @@ module.exports = {
         host     : 'localhost',
         port     : '3306',
         user     : 'root',
-        password : 'root',
+        password : '',
         database : 'booking_cars'
     },
     accessTokenSecret : "SECRET-BOOKING-CARS-TOKEN",
-    refreshTokenSecret: "driver-system-refresh-token",
-    accessTokenLife: 300,
+    refreshTokenSecret: "SECRET-DRIVER-SYSTEM-REFRESH-TOKEN",
+    accessTokenLife: '24h',
     refreshTokenLife: 86400
 }

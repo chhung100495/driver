@@ -15,14 +15,29 @@ var router = new Router({
       component: Login
     },
     {
+      path: '/logout',
+      beforeEnter: (to, from, next) => {
+        localStorage.clear();
+        next({
+          path: '/login',
+          query: {
+            redirect: to.fullPath
+          }
+        })
+      }
+    },
+    {
       path: '/register',
       name: 'register',
       component: Register
     },
     {
-      path: '/',
+      path: '/home',
       name: 'home',
-      component: Home
+      component: Home,
+      meta: {
+        requiresAuth: true
+      }
     }
     // {
     //   path: '/about',
@@ -49,7 +64,7 @@ router.beforeEach((to, from, next) => {
       next()
     }
   } else {
-    next() // make sure to always call next()!
+    next()
   }
 })
 

@@ -18,9 +18,9 @@
 
     <!-- Right aligned nav items -->
     <b-navbar-nav class="ml-auto">
-
-      <b-nav-item href="#">Đăng ký</b-nav-item>
-      <b-nav-item href="#">Đăng nhập</b-nav-item>
+      <li class="nav-item">
+        <router-link to="/logout" class="nav-link">Đăng xuất <i class="fas fa-sign-out-alt"></i></router-link>
+      </li>
     </b-navbar-nav>
 
   </b-collapse>

@@ -28,7 +28,7 @@
         methods: {
             checkCredentials(args) {
                 var self = this;
-                var url = 'http://localhost:3000/users/register';
+                var url = 'http://localhost:3003/users/register';
                 var objToPost = {
                     Username: args.username,
                     Password: args.password
@@ -63,4 +63,7 @@
 </script>
 
 <style scoped>
+    .container-fluid {
+        margin-top: 60px;
+    }
 </style>

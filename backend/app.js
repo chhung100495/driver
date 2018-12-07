@@ -15,14 +15,14 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.json({ type: 'application/*' }));
 
-app.get('/', middlewares.verifyAccessToken, (req, res) => {
-    res.json({
-        msg: 'Driver System'
-    });
-});
-
 app.use('/users', userCtrl);
-app.use('/requests', requestCtrl);
+app.use('/requests', middlewares.verifyAccessToken, requestCtrl);
+
+app.get('/', (req, res) => {
+  res.json({
+      msg: 'Driver System'
+  });
+});
 
 app.use((req, res, next) => {
   var err = new Error("Not found");
