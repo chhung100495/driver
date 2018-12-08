@@ -10,7 +10,7 @@ router.post('/', (req, res, next) => {
     res.statusCode = 200
     if (value.length > 0) {
       res.json(value[0])
-      broadcastAll(value[0])
+      broadcastAll(req.body)
     } else {
       res.json({})
     }

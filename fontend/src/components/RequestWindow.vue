@@ -13,10 +13,12 @@
           </div>
           <div class="info-ride-start">
             <div class="title">
-              TÒA NHÀ A
+              <strong>
+                {{request.start.name}}
+              </strong>
             </div>
             <div class="detail">
-              123 Trần Hưng Đạo, P4, Q1 TPHCM
+              {{request.start.address}}
             </div>
           </div>
 
@@ -29,10 +31,13 @@
 
           <div class="info-ride-end">
             <div class="title">
-              TÒA NHÀ A
+              <strong>
+                {{request.end.name}}
+              </strong>
+
             </div>
             <div class="detail">
-              123 Trần Hưng Đạo, P4, Q1 TPHCM
+              {{request.end.address}}
             </div>
           </div>
         </el-card>
@@ -41,7 +46,7 @@
 
     <b-row class="button-row">
       <b-col>
-        <el-button class="btn-agree" type="success">ĐỒNG Ý NHẬN CUỐC</el-button>
+        <el-button class="btn-agree" @click="acceptRequest()" type="success">ĐỒNG Ý NHẬN CUỐC</el-button>
       </b-col>
     </b-row>
   </b-container>
@@ -50,6 +55,31 @@
 
 <script>
 export default {
+  props: ['request'],
+  data() {
+    return {
+      requestModel: {}
+    }
+  },
+  methods: {
+    acceptRequest() {
+      var requestInfo = {
+        ID: this.request.ID,
+        isAccepted: true
+      }
+      console.log('ok')
+      this.$emit('acceptRequest', requestInfo)
+    },
+    calculateTheDistance() {
+      // NOTE: using haversine or google map service
+    }
+  },
+  watch: {
+    request(newValue, oldValue) {
+      this.requestModel = newValue
+      console.log('here', this.requestModel)
+    }
+  }
 }
 </script>
 
@@ -58,8 +88,10 @@ export default {
     background-color: #363A45;
     color: white;
     min-height: 100%;
-    min-width: 100%
+    min-width: 100%;
+    top: 0px;
   }
+
 
   .box-card {
     position: relative;
@@ -126,6 +158,10 @@ export default {
     bottom: 50px;
     left: 0px;
     z-index: 99;
+  }
+
+  .detail {
+    font-size: 14px;
   }
 
   .btn-agree {

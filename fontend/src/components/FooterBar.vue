@@ -90,4 +90,8 @@ export default {
     padding: 5px !important;
   }
 
+  .card-footer {
+    padding: 10px;
+  }
+
 </style>
