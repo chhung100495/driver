@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <Map :request="request"/>
+    <Map :request="receivedRequest" />
   </div>
 </template>
 
@@ -15,7 +15,7 @@ export default {
   },
   data() {
     return {
-      'request': Object
+      receivedRequest: null
     }
   },
   methods: {
@@ -35,7 +35,7 @@ export default {
     },
     receivedRequestValue(value) {
       var self = this;
-      self.request = value;
+      self.receivedRequest = value;
       console.log('received request', value)
     }
   },
