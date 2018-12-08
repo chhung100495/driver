@@ -118,4 +118,18 @@ router.post('/refresh', middlewares.verifyRefreshToken, (req, res) => {
         })
 });
 
+router.post('/changeStatus', middlewares.verifyAccessToken, (req, res, next) => {
+    userRepo.changeStatus(req.body, req.body.Status)
+        .then(value => {
+            console.log(value);
+            res.json({
+                success: true,
+                msg: "Thay đổi trạng thái thành công.",
+            })
+        })
+        .catch(err => {
+            next(err)
+        })
+});
+
 module.exports = router;

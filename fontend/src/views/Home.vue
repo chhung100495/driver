@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <Map />
+    <Map :request="request"/>
   </div>
 </template>
 
@@ -13,6 +13,11 @@ export default {
   components: {
     Map
   },
+  data() {
+    return {
+      'request': Object
+    }
+  },
   methods: {
     setupWebSocket() {
       var self = this
@@ -20,7 +25,7 @@ export default {
       var clientSocket = new WebSocket('ws://localhost:40511');
 
       clientSocket.onopen = function () {
-          clientSocket.send('hello server');
+          clientSocket.send('Hello server!');
       }
 
       clientSocket.onmessage = function (e) {
@@ -29,6 +34,8 @@ export default {
       }
     },
     receivedRequestValue(value) {
+      var self = this;
+      self.request = value;
       console.log('received request', value)
     }
   },

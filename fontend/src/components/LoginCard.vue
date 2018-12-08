@@ -67,9 +67,9 @@
                 'passwordIconClass': ''
             }
         },
-        props: {
-           error: Object
-        },
+        props: [
+           'error'
+        ],
         mounted() {
             var self = this;
             window.addEventListener('keydown', self.onEnter);

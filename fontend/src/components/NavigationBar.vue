@@ -1,20 +1,15 @@
 <template>
-  <b-navbar toggleable="md" type="light" variant="light">
+  <b-navbar toggleable="md" type="light">
 
   <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
 
   <b-navbar-brand>
-    <router-link :to="{ name: '', params: {} }">
-      <strong>Driver</strong>
+    <router-link to="/home">
+      <strong>Driver System</strong>
     </router-link>
   </b-navbar-brand>
 
   <b-collapse is-nav id="nav_collapse">
-
-    <b-navbar-nav>
-      <b-nav-item href="#">Link</b-nav-item>
-      <b-nav-item href="#" disabled>Disabled</b-nav-item>
-    </b-navbar-nav>
 
     <!-- Right aligned nav items -->
     <b-navbar-nav class="ml-auto">
@@ -29,10 +24,7 @@
 </template>
 
 <script>
-
-export default {
-
-}
+  export default {}
 </script>
 
 <style lang="css">

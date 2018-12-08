@@ -15,7 +15,7 @@
             </gmap-marker>
           </gmap-map>
           <div class="container">
-            <InfoBar />
+            <InfoBar v-if="request.ID"/>
           </div>
 
           <div class="footer-bar" >
@@ -30,7 +30,6 @@
     </div>
 
   </div>
-
 </template>
 
 <script>
@@ -48,7 +47,9 @@
     }
   })
   export default {
-    props: ['request'],
+    props: [
+      'request'
+    ],
     components: {
       NavigationBar,
       InfoBar,

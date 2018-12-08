@@ -80,9 +80,9 @@
                 focused: false
             }
         },
-        props: {
-            notification: Object
-        },
+        props: [
+            'notification'
+        ],
         mounted() {
             var self = this;
             window.addEventListener('keydown', self.onEnter);
