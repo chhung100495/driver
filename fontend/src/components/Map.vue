@@ -1,6 +1,6 @@
 <template lang="html">
   <div>
-    <div v-if="true">
+    <div v-if="isShowMap">
       <NavigationBar/>
       <div class="">
         <div style="position: relative">
@@ -15,7 +15,7 @@
             </gmap-marker>
           </gmap-map>
           <div class="container">
-            <InfoBar />
+            <InfoBar :request="request"/>
           </div>
 
           <div class="footer-bar" >
@@ -25,8 +25,12 @@
       </div>
     </div>
 
-    <div v-if="false">
-      <RequestWindow />
+    <div v-if="isReceivedRequest() && !isShowMap">
+      <RequestWindow :request="request" @acceptRequest="acceptRequestHandler" />
+    </div>
+
+    <div v-if="!isReceivedRequest()">
+      <WaitingScreen />
     </div>
 
   </div>
@@ -39,6 +43,7 @@
   import InfoBar from '@/components/InfoBar.vue'
   import FooterBar from '@/components/FooterBar.vue'
   import RequestWindow from '@/components/RequestWindow.vue'
+  import WaitingScreen from '@/components/WaitingScreen.vue'
   import * as VueGoogleMaps from 'vue2-google-maps'
 
   Vue.use(VueGoogleMaps, {
@@ -53,16 +58,18 @@
       NavigationBar,
       InfoBar,
       FooterBar,
-      RequestWindow
+      RequestWindow,
+      WaitingScreen
     },
     data () {
       return {
         state4: '',
+        isShowMap: false,
         timeout: null,
         marker: null,
         inputData: '',
         mapModel: null,
-        selectedRequest: {},
+        requestModel: {},
         geocoder: null,
         position: {
           lat: 0,
@@ -133,30 +140,19 @@
           }
         })
       },
+      acceptRequestHandler(args) {
+        if (args.isAccepted) {
+          this.isShowMap = true
+        }
+        // NOTE:  send request for server to broadcast other clients know
+      },
       updateCoordinates(marker) {
         this.position.lat = marker.latLng.lat()
         this.position.lng = marker.latLng.lng()
       },
-      emitRequestGeocode() {
-        if ((this.position.lat == 0 && this.position.lng == 0) || this.request.ID == null) {
-          this.$message({ type: 'error', message: 'Không đủ thông tin để ghi nhận' });
-          return
-        }
-        var geocode = {
-          ID: this.request.ID,
-          Lat: this.position.lat,
-          Lng: this.position.lng
-        }
-        this.$emit('locationUpdated', geocode)
-      },
-      requestInfo() {
-        if (this.selectedRequest.GuestName == null && this.selectedRequest.NameLocation == null) {
-          return 'Không có thông tin để hiển thị'
-        }
-        return `Tên khách hàng: ${this.selectedRequest.GuestName} - Địa chỉ đón: ${this.selectedRequest.NameLocation}`
-      },
-      disableButton() {
-        return this.selectedRequest.ID == null
+      isReceivedRequest() {
+        console.log('request model', this.requestModel)
+        return this.requestModel.ID != null
       }
     },
     mounted() {
@@ -168,7 +164,7 @@
     },
     watch: {
       request (newValue, oldValue) {
-        this.selectedRequest = newValue
+        this.requestModel = newValue
       }
     }
   }

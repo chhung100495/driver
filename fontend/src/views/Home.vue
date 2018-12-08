@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <Map />
+    <Map :request="receivedRequest" />
   </div>
 </template>
 
@@ -12,6 +12,11 @@ export default {
   name: 'home',
   components: {
     Map
+  },
+  data() {
+    return {
+      receivedRequest: null
+    }
   },
   methods: {
     setupWebSocket() {
@@ -29,6 +34,7 @@ export default {
       }
     },
     receivedRequestValue(value) {
+      this.receivedRequest = value
       console.log('received request', value)
     }
   },
