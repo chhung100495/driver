@@ -4,6 +4,7 @@ import Login from '@/views/Login.vue'
 import Register from '@/views/Register.vue'
 import Home from './views/Home.vue'
 import RequestWindow from './components/RequestWindow.vue'
+import axios from 'axios'
 
 Vue.use(Router)
 
@@ -16,13 +17,34 @@ var router = new Router({
     },
     {
       path: '/logout',
+      meta: {
+        requiresAuth: true
+      },
       beforeEnter: (to, from, next) => {
-        localStorage.clear();
-        next({
-          path: '/login',
-          query: {
-            redirect: to.fullPath
-          }
+        var url = 'http://localhost:3003/users/logout';
+        var objToPost = {
+            Username: localStorage.username,
+        }
+        var jsonToPost = JSON.stringify(objToPost);
+        axios({
+          method: 'POST',
+          url: url,
+          headers: {'x-access-token': localStorage.access_token},
+          data: jsonToPost,
+          timeout: 10000
+        })
+        .then(res => {
+          console.log(res);
+          localStorage.clear();
+          next({
+            path: '/login',
+            query: {
+              redirect: to.fullPath
+            }
+          })
+        })
+        .catch(err => {
+          console.log(err)
         })
       }
     },

@@ -40,21 +40,16 @@
                         timeout: 10000
                     })
                     .then(res => {
-                        if(res.status === 200 && res.data.auth === true) {
-                            self.error.show = false;
-                            self.error.msg = "Đăng nhập thành công.";
-                            localStorage.access_token = res.data.access_token;
-                            localStorage.refresh_token = res.data.refresh_token;
-                            self.$router.push('/home');
-                        } else {
-                            self.error.show = true;
-                            self.error.msg = "Đăng nhập thất bại.";
-                        }
+                        self.error.show = false;
+                        self.error.msg = res.data.msg;
+                        localStorage.username = res.data.username;
+                        localStorage.access_token = res.data.access_token;
+                        localStorage.refresh_token = res.data.refresh_token;
+                        self.$router.push('/home');
                     })
                     .catch(err => {
-                        console.log(err);
                         self.error.show = true;
-                        self.error.msg = "Đăng nhập thất bại.";
+                        self.error.msg =  err.response.data.error;
                     })
             }
         }

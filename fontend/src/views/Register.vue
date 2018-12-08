@@ -41,20 +41,13 @@
                         timeout: 10000
                     })
                     .then(res => {
-                        if(res.status === 201 && res.data.success === true) {
-                            self.notification.show = true;
-                            self.notification.msg = "Đăng ký thành công.";
-                            self.notification.variant = "info"
-                        } else {
-                            self.notification.show = true;
-                            self.notification.msg = "Tên đăng nhập đã tồn tại.";
-                            self.notification.variant = "danger"
-                        }
+                        self.notification.show = true;
+                        self.notification.msg = res.data.msg;
+                        self.notification.variant = "info"
                     })
                     .catch(err => {
-                        console.log(err);
                         self.notification.show = true;
-                        self.notification.msg = "Đăng ký thất bại.";
+                        self.notification.msg = err.response.data.error;
                         self.notification.variant = "danger"
                     })
             }

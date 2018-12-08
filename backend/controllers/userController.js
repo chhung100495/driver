@@ -3,37 +3,28 @@ var userRepo = require('../repositories/userRepository');
 var jwt = require('jsonwebtoken');
 
 var config = require('../config');
+var constants = require('../constants');
 var middlewares = require('../fn/middlewares');
 
 var router = express.Router();
 
-router.post('/register', (req, res) => {
+let userEntity,
+    acToken,
+    rfToken;
+
+router.post('/register', (req, res, next) => {
     userRepo.checkUsernameAvailability(req.body)
         .then(rows => {
             if (rows.length > 0) {
-                res.json({
-                    success: false,
-                    msg: "Username already exists"
-                })
-
-                return {
-                    "availability": false
-                }
+                throw new Error("Tên đăng nhập đã tồn tại.");
             } else {
-                return {
-                    "availability": true
-                }
-            }
-        })
-        .then(info => {
-            if(info.availability === true) {
                 return userRepo.add(req.body)
                     .then(value => {
                         console.log(value);
                         res.statusCode = 201;
                         res.json({
                             success: true,
-                            msg: "Registration successful"
+                            msg: "Đăng ký thành công."
                         });
                     })
             }
@@ -44,51 +35,55 @@ router.post('/register', (req, res) => {
 });
 
 router.post('/login', (req, res, next) => {
-    userRepo.login(req.body)
+    userRepo.validateCredentials(req.body)
         .then(rows => {
             if (rows.length > 0) {
-                var userEntity = rows[0];
+                userEntity = rows[0];
 
                 var payload = {
                     user: userEntity
                 }
-                var acToken = jwt.sign(payload, config.accessTokenSecret, {
+                acToken = jwt.sign(payload, config.accessTokenSecret, {
                     expiresIn: config.accessTokenLife // seconds
                 });
 
-                var rfToken = jwt.sign(payload, config.refreshTokenSecret, {
+                rfToken = jwt.sign(payload, config.refreshTokenSecret, {
                     expiresIn: config.refreshTokenLife
                 });
 
-                return {
-                    "auth": true,
-                    "userEntity": userEntity,
-                    "acToken": acToken,
-                    "rfToken": rfToken
-                }
+                // update refresh token in database
+                return userRepo.updateRefreshToken(userEntity, rfToken)
             } else {
-                res.json({
-                    auth: false
-                })
-
-                return {
-                    "auth": false
-                }
+                throw new Error("Sai thông tin tên đăng nhập hoặc mật khẩu.");
             }
         })
-        .then(info => {
-            if(info.auth === true) {
-                // store refresh token into database
-                return userRepo.addNewRefreshToken(info.userEntity, info.rfToken)
-                    .then(value => {
-                        console.log(value);
-                        res.json({
-                            auth: true,
-                            access_token: info.acToken,
-                            refresh_token: info.rfToken
-                        })
+        .then(value => {
+            console.log(value);
+            userRepo.changeStatus(userEntity, constants.status.online)
+                .then(value => {
+                    console.log(value);
+                    res.json({
+                        auth: true,
+                        username: userEntity.Username,
+                        msg: "Đăng nhập thành công.",
+                        access_token: acToken,
+                        refresh_token: rfToken
                     })
-            }
+                })
+        })
+        .catch(err => {
+            next(err)
+        })
+});
+
+router.post('/logout', middlewares.verifyAccessToken, (req, res, next) => {
+    userRepo.changeStatus(req.body, constants.status.offline)
+        .then(value => {
+            console.log(value);
+            res.json({
+                success: true,
+                msg: "Đăng xuất thành công.",
+            })
         })
         .catch(err => {
             next(err)
