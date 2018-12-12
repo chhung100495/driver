@@ -21,9 +21,9 @@ var router = new Router({
         requiresAuth: true
       },
       beforeEnter: (to, from, next) => {
-        var url = 'http://localhost:3003/users/logout';
+        var url = 'http://localhost:3003/drivers/logout';
         var objToPost = {
-            Username: localStorage.username,
+            ID: localStorage.id,
         }
         var jsonToPost = JSON.stringify(objToPost);
         axios({

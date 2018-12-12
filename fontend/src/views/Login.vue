@@ -27,7 +27,7 @@
         methods: {
             checkCredentials(args) {
                 var self = this;
-                var url = 'http://localhost:3003/users/login';
+                var url = 'http://localhost:3003/drivers/login';
                 var objToPost = {
                     Username: args.username,
                     Password: args.password
@@ -42,6 +42,7 @@
                     .then(res => {
                         self.error.show = false;
                         self.error.msg = res.data.msg;
+                        localStorage.id = res.data.id;
                         localStorage.username = res.data.username;
                         localStorage.access_token = res.data.access_token;
                         localStorage.refresh_token = res.data.refresh_token;

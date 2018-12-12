@@ -25,7 +25,7 @@
           <span class="title-icon">TRÒ CHUYỆN</span>
         </b-col>
         <b-col class="right">
-          <span class="title-icon">{{ statusText }}</span>
+          <span class="title-icon">SẴN SÀNG</span>
         </b-col>
       </b-row>
       <hr style="background: #292C35; padding: 1px">
@@ -44,55 +44,7 @@
 </template>
 
 <script>
-  import axios from 'axios';
-
-  export default {
-    data() {
-      return {
-        'active': false,
-        'statusText': "KHÔNG HOẠT ĐỘNG"
-      }
-    },
-    watch: {
-      'active': function(newVal, oldVal) {
-        var self = this;
-        if(self.active === true)
-          self.statusText = "HOẠT ĐỘNG";
-        else {
-          self.statusText = "KHÔNG HOẠT ĐỘNG";
-        }
-        self.changeStatus();
-      }
-    },
-    methods: {
-      changeStatus() {
-        var self = this;
-        var status = (self.active === true ? 1 : 2);
-        var url = 'http://localhost:3003/users/changeStatus';
-        var objToPost = {
-            Username: localStorage.username,
-            Status: status
-        }
-        var jsonToPost = JSON.stringify(objToPost);
-        axios({
-          method: 'POST',
-          url: url,
-          headers: {'x-access-token': localStorage.access_token},
-          data: jsonToPost,
-          timeout: 10000
-        })
-        .then(res => {
-          self.$message({
-            message: res.data.msg,
-            type: 'success'
-          });
-        })
-        .catch(err => {
-          console.log(err)
-        })
-      }
-    }
-  }
+  export default {}
 </script>
 
 <style lang="css">

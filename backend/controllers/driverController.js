@@ -1,5 +1,5 @@
 var express = require('express');
-var userRepo = require('../repositories/userRepository');
+var driverRepo = require('../repositories/driverRepository');
 var jwt = require('jsonwebtoken');
 
 var config = require('../config');
@@ -8,17 +8,17 @@ var middlewares = require('../fn/middlewares');
 
 var router = express.Router();
 
-let userEntity,
+let driverEntity,
     acToken,
     rfToken;
 
 router.post('/register', (req, res, next) => {
-    userRepo.checkUsernameAvailability(req.body)
+    driverRepo.checkUsernameAvailability(req.body)
         .then(rows => {
             if (rows.length > 0) {
                 throw new Error("Tên đăng nhập đã tồn tại.");
             } else {
-                return userRepo.add(req.body)
+                return driverRepo.add(req.body)
                     .then(value => {
                         console.log(value);
                         res.statusCode = 201;
@@ -35,13 +35,13 @@ router.post('/register', (req, res, next) => {
 });
 
 router.post('/login', (req, res, next) => {
-    userRepo.validateCredentials(req.body)
+    driverRepo.validateCredentials(req.body)
         .then(rows => {
             if (rows.length > 0) {
-                userEntity = rows[0];
+                driverEntity = rows[0];
 
                 var payload = {
-                    user: userEntity
+                    user: driverEntity
                 }
                 acToken = jwt.sign(payload, config.accessTokenSecret, {
                     expiresIn: config.accessTokenLife // seconds
@@ -52,19 +52,20 @@ router.post('/login', (req, res, next) => {
                 });
 
                 // update refresh token in database
-                return userRepo.updateRefreshToken(userEntity, rfToken)
+                return driverRepo.updateRefreshToken(driverEntity, rfToken)
             } else {
                 throw new Error("Sai thông tin tên đăng nhập hoặc mật khẩu.");
             }
         })
         .then(value => {
             console.log(value);
-            userRepo.changeStatus(userEntity, constants.status.online)
+            driverRepo.changeStatus(driverEntity, constants.status.online)
                 .then(value => {
                     console.log(value);
                     res.json({
                         auth: true,
-                        username: userEntity.Username,
+                        id: driverEntity.ID,
+                        username: driverEntity.Username,
                         msg: "Đăng nhập thành công.",
                         access_token: acToken,
                         refresh_token: rfToken
@@ -77,7 +78,7 @@ router.post('/login', (req, res, next) => {
 });
 
 router.post('/logout', middlewares.verifyAccessToken, (req, res, next) => {
-    userRepo.changeStatus(req.body, constants.status.offline)
+    driverRepo.changeStatus(req.body, constants.status.offline)
         .then(value => {
             console.log(value);
             res.json({
@@ -91,13 +92,13 @@ router.post('/logout', middlewares.verifyAccessToken, (req, res, next) => {
 });
 
 router.post('/refresh', middlewares.verifyRefreshToken, (req, res) => {
-    userRepo.checkRefreshToken(req.payload.user, req.rfToken)
+    driverRepo.checkRefreshToken(req.payload.user, req.rfToken)
         .then(rows => {
             if (rows.length > 0) {
-                var userEntity = rows[0];
+                var driverEntity = rows[0];
 
                 var payload = {
-                    user: userEntity
+                    user: driverEntity
                 }
                 var acToken = jwt.sign(payload, config.accessTokenSecret, {
                     expiresIn: config.accessTokenLife // seconds
@@ -119,7 +120,7 @@ router.post('/refresh', middlewares.verifyRefreshToken, (req, res) => {
 });
 
 router.post('/changeStatus', middlewares.verifyAccessToken, (req, res, next) => {
-    userRepo.changeStatus(req.body, req.body.Status)
+    driverRepo.changeStatus(req.body, req.body.Status)
         .then(value => {
             console.log(value);
             res.json({
@@ -131,5 +132,35 @@ router.post('/changeStatus', middlewares.verifyAccessToken, (req, res, next) => 
             next(err)
         })
 });
+
+router.post('/updateCoordinates', middlewares.verifyAccessToken, (req, res, next) => {
+    driverRepo.updateCoordinates(req.body, req.body.Latitude, req.body.Longtitude)
+        .then(value => {
+            console.log(value);
+            res.json({
+                success: true,
+                msg: "Cập nhật vị trí thành công.",
+            })
+        })
+        .catch(err => {
+            next(err)
+        })
+});
+
+router.get('/:id', middlewares.verifyAccessToken, (req, res) => {
+    var id = req.params.id;
+    driverRepo.loadSingle(id)
+        .then(rows => {
+            if (rows.length > 0) {
+                res.json(rows[0]);
+            } else {
+                res.statusCode = 204;
+                res.end('No data');
+            }
+        })
+        .catch(err => {
+            next(err);
+        })
+})
 
 module.exports = router;

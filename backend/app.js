@@ -3,7 +3,7 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     cors = require('cors');
 
-var userCtrl = require('./controllers/userController');
+var driverCtrl = require('./controllers/driverController');
 var requestCtrl = require('./controllers/requestController');
 
 var middlewares = require('./fn/middlewares');
@@ -15,7 +15,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.json({ type: 'application/*' }));
 
-app.use('/users', userCtrl);
+app.use('/drivers', driverCtrl);
 app.use('/requests', middlewares.verifyAccessToken, requestCtrl);
 
 app.get('/', (req, res) => {

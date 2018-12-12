@@ -1,17 +1,7 @@
 <template>
   <div id="app">
-    <router-link to="/"></router-link>
     <router-view></router-view>
-    <!--<div>
-      <NavigationBar/>
-      <div>
-        <div class="row">
-          <div class="col-md-12">
-            <router-view></router-view>
-          </div>
-        </div>
-      </div>
-    </div> -->
+    <notifications group="notification" position="bottom right"/>
   </div>
 </template>
 
@@ -20,7 +10,7 @@
 
 export default {
   components: {
-  }
+  },
 }
 </script>
 
@@ -31,5 +21,24 @@ export default {
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
+  }
+
+  .el-notification.right {
+    border-left: none;
+  }
+
+  .notification-bottom {
+    z-index: 99;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    background-color: black;
+    height: 20px;
+  /* Rest of your styling */
+  }
+  .notification-bottom > .alert {
+    color: white;
+    text-align: center;
   }
 </style>
