@@ -4,16 +4,16 @@
       <div class="row">
         <div class="col-md-12">
           <el-steps :active="1" align-center>
-            <el-step  title="ĐÓN KHÁCH" :description="request.Guest.name"></el-step>
-            <el-step title="TRẢ KHÁCH" :description="request.Guest.name"></el-step>
+            <el-step title="ĐÓN KHÁCH" :description="request.NameLocation"></el-step>
+            <el-step title="TRẢ KHÁCH" :description="request.FinishLocationName"></el-step>
           </el-steps>
         </div>
       </div>
       <hr>
       <div class="row">
         <div class="col-md-8 mt-2">
-          <span>{{request.start.name}}</span><br>
-          <span>{{request.start.address}}</span>
+          <span>Khách hàng: {{request.GuestName}}</span><br>
+          <span>{{request.GuestTelephone}}</span>
         </div>
         <div class="col-md-4 mt-2">
           <el-button icon="el-icon-news" type="danger" round>Chỉ đường</el-button>
@@ -22,8 +22,8 @@
     </el-card>
     <el-card class="note-card">
       <div class="row">
-        <div class="col-md-12">
-          <span>Ghi chú: {{request.Guest.note}}</span>
+        <div class="col-md-12" v-if="request.Node">
+          <i>Ghi chú: {{request.Note}}</i>
         </div>
       </div>
     </el-card>
@@ -31,9 +31,9 @@
 </template>
 
 <script>
-export default {
-  props: ['request']
-}
+  export default {
+    props: ['request']
+  }
 </script>
 
 <style lang="css">

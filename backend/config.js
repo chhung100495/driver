@@ -9,5 +9,6 @@ module.exports = {
     accessTokenSecret : "SECRET-BOOKING-CARS-TOKEN",
     refreshTokenSecret: "SECRET-DRIVER-SYSTEM-REFRESH-TOKEN",
     accessTokenLife: '24h',
-    refreshTokenLife: 86400
+    refreshTokenLife: 86400,
+    n: 5
 }

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="footer-bar">
     <el-card class="card-footer" style="border-top-left-radius: 4px; border-top-right-radius: 4px">
       <b-row>
         <b-col class="left">
@@ -48,6 +48,16 @@
 </script>
 
 <style lang="css">
+  .footer-bar {
+    margin: 0 auto;
+    width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+    position: absolute;
+    bottom: 10px;
+    left: 0px;
+    z-index: 99;
+  }
 
   .el-step__description {
     color: white !important;
@@ -93,5 +103,4 @@
   .card-footer {
     padding: 10px;
   }
-
 </style>

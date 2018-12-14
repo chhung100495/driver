@@ -133,7 +133,7 @@
     }
 </script>
 
-<style scoped>
+<style lang="css" scoped>
     .fas.fa-user, .fas.fa-lock {
         position: absolute;
         top: 10px;

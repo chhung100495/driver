@@ -59,18 +59,26 @@ router.post('/login', (req, res, next) => {
         })
         .then(value => {
             console.log(value);
-            driverRepo.changeStatus(driverEntity, constants.status.online)
-                .then(value => {
-                    console.log(value);
-                    res.json({
-                        auth: true,
-                        id: driverEntity.ID,
-                        username: driverEntity.Username,
-                        msg: "Đăng nhập thành công.",
-                        access_token: acToken,
-                        refresh_token: rfToken
+            return driverRepo.checkStatus(driverEntity, constants.status.offline);
+        })
+        .then(rows => {
+            console.log(rows);
+            if (rows.length > 0) {
+                driverRepo.changeStatus(driverEntity, constants.status.online)
+                    .then(value => {
+                        console.log(value);
+                        res.json({
+                            auth: true,
+                            id: driverEntity.ID,
+                            username: driverEntity.Username,
+                            msg: "Đăng nhập thành công.",
+                            access_token: acToken,
+                            refresh_token: rfToken
+                        })
                     })
-                })
+            } else {
+                throw new Error("Tài khoản hiện đang đăng nhập.");
+            }
         })
         .catch(err => {
             next(err)

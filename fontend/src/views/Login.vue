@@ -57,7 +57,7 @@
     }
 </script>
 
-<style scoped>
+<style lang="css" scoped>
     .container-fluid {
         margin-top: 60px;
     }

@@ -1,5 +1,4 @@
 <template lang="html">
-  <div>
     <div>
       <NavigationBar @changeCoordinates="getCoordinates" @driverActivation="checkActive"/>
       <div style="position: relative">
@@ -13,23 +12,19 @@
           <gmap-marker ref="markers" :position="currentPosition" :draggable="true" @dragend="changePosition">
           </gmap-marker>
         </gmap-map>
-        <!-- <div class="container">
-          <InfoBar :request="request"/>
-        </div>
 
-        <div class="footer-bar" >
-          <FooterBar />
+        <RequestWindow v-if="showRequestWindow" :request="request" @acceptRequest="handleAcceptRequest"></RequestWindow>
+        <!-- <div class="container" v-if="request">
+          <InfoBar :request="request"/>
         </div> -->
+
+        <FooterBar v-if="showFooterBar"/>
+
         <div v-if="!active" class="notification-bottom">
           <small class="alert">Bạn đang trong chế độ nghỉ ngơi, không nhận được cuốc.</small>
         </div>
       </div>
     </div>
-
-    <div v-if="isReceivedRequest()">
-      <RequestWindow :request="request" @acceptRequest="acceptRequestHandler" />
-    </div>
-  </div>
 </template>
 
 <script>
@@ -51,19 +46,20 @@
     },
     data () {
       return {
+        showRequestWindow: false,
+        showFooterBar: false,
         active: false,
         distance: null,
         marker: null,
         mapModel: null,
-        requestModel: {},
         geocoder: null,
         position: {
           lat: 0,
           lng: 0
         },
         currentPosition: {
-          lat: 10.7624176,
-          lng: 106.68119679999995
+          lat: 0,
+          lng: 0
         },
         options: {
           disableDefaultUI : true,
@@ -189,8 +185,9 @@
       },
       getCoordinates(args) {
         var self = this;
-        self.currentPosition.lat = args.lat;
-        self.currentPosition.lng = args.lng;
+        self.position.lat = args.lat;
+        self.position.lng = args.lng;
+        self.haversineDistance();
       },
       updateCoordinates() {
         var self = this;
@@ -215,21 +212,11 @@
           console.log(err)
         })
       },
-      acceptRequestHandler(args) {
-        // if (args.isAccepted) {
-        //   this.isShowMap = true
-        // }
-        // NOTE:  send request for server to broadcast other clients know
-      },
       changePosition(marker) {
         var self = this;
         self.position.lat = marker.latLng.lat();
         self.position.lng = marker.latLng.lng();
         self.haversineDistance();
-      },
-      isReceivedRequest() {
-        console.log('request model', this.requestModel)
-        return this.requestModel.ID != null
       },
       geolocate() {
         var self = this;
@@ -271,13 +258,30 @@
           timeout: 5000
         })
         .then(res => {
-          self.currentPosition.lat = Number(res.data.Latitude);
-          self.currentPosition.lng = Number(res.data.Longtitude);
+          if (res.data.Latitude != null && res.data.Longtitude != null) {
+            self.currentPosition.lat = Number(res.data.Latitude);
+            self.currentPosition.lng = Number(res.data.Longtitude);
+          } else {
+            self.currentPosition.lat = 10.7624176;
+            self.currentPosition.lng = 106.68119679999995;
+            self.updateCoordinates();
+          }
         })
         .catch(err => {
           console.log(err)
         })
       },
+      onCurrentPositionUpdated() {
+        var self = this;
+        self.$emit('currentPositionUpdated', self.currentPosition);
+      },
+      handleAcceptRequest(args) {
+        var self = this;
+        self.showRequestWindow = false;
+        if (args === true) {
+          self.showFooterBar = true;
+        }
+      }
     },
     mounted() {
       var self = this;
@@ -287,38 +291,28 @@
       })
       self.marker = self.$refs.markers;
       self.mapModel = self.$refs.gmap;
+
+      // watch object 'currentPosition' change value
+      this.$watch('$data.currentPosition', this.onCurrentPositionUpdated, { deep: true })
     },
     watch: {
       request (newValue, oldValue) {
         var self = this;
-        self.requestModel = newValue;
+        self.showRequestWindow = true;
       },
+
+      active (newValue, oldValue) {
+        var self = this;
+        // '1' is online status, '8' is rest status
+        var status = (self.active === true ? 1 : 8);
+        self.$emit('currentStatus', status);
+      }
     }
   }
 </script>
 
-<style>
+<style lang="css">
   #map {
     min-height: calc(100vh - 75px);
-  }
-
-  .container {
-    margin: 0 auto;
-    position: absolute;
-    top: 10px;
-    left: 0px;
-    z-index: 99;
-    height: 100%;
-  }
-
-  .footer-bar {
-    margin: 0 auto;
-    width: 100%;
-    padding-left: 15px;
-    padding-right: 15px;
-    position: absolute;
-    bottom: 10px;
-    left: 0px;
-    z-index: 99;
   }
 </style>

@@ -6,15 +6,13 @@
 </template>
 
 <script>
-// @ is an alias to /src
-
-export default {
-  components: {
-  },
-}
+  export default {
+    components: {
+    },
+  }
 </script>
 
-<style>
+<style lang="css">
   #app {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;

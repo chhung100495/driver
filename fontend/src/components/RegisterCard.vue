@@ -168,7 +168,7 @@
     }
 </script>
 
-<style scoped>
+<style lang="css" scoped>
     .fas.fa-user, .fas.fa-lock, .fas.fa-redo {
         position: absolute;
         top: 10px;

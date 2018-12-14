@@ -1,5 +1,5 @@
 <template>
-  <b-navbar toggleable="md" type="dark" variant="info">
+  <b-navbar toggleable="md" type="dark" variant="dark">
     <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
 
     <b-collapse is-nav id="nav_collapse">
@@ -17,8 +17,12 @@
       </b-nav-item>
 
       <b-nav-form class="mx-auto">
-        <i class="fas fa-search fa-sm"></i>
-        <input type="text" ref="autocomplete" class="form-control-sm autocomplete" placeholder="Nhập vị trí hiện tại">
+        <b-input-group size="sm">
+          <b-input-group-text slot="prepend">
+            <i class="fas fa-search"></i>
+          </b-input-group-text>
+          <input type="text" ref="autocomplete" class="form-control-sm autocomplete" placeholder="Nhập vị trí hiện tại">
+        </b-input-group>
       </b-nav-form>
 
       <li class="nav-item ml-3">
@@ -79,7 +83,7 @@
           timeout: 5000
         })
         .then(res => {
-          if(res.data.Status === 1) {
+          if (res.data.Status === 1) {
             self.active = true;
           } else {
             self.active = false;
@@ -92,7 +96,8 @@
       },
       changeStatus() {
         var self = this;
-        var status = (self.active === true ? 1 : 2);
+        // '1' is online status, '8' is rest status
+        var status = (self.active === true ? 1 : 8);
         var url = 'http://localhost:3003/drivers/changeStatus';
         var objToPost = {
             ID: localStorage.id,
@@ -124,7 +129,7 @@
   }
 </script>
 
-<style>
+<style lang="css">
   .form-control-sm.autocomplete {
     width: 270px;
   }
@@ -133,16 +138,5 @@
   }
   .pac-container {
     width: 270px !important;
-  }
-  .fas.fa-search {
-    position: absolute;
-    top: 21px;
-    right: 390px;
-    z-index: 999;
-    color: gray;
-  }
-  .form-control-sm {
-    position: relative;
-    padding-left: 25px !important;
   }
 </style>
