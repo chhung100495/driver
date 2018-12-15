@@ -47,6 +47,14 @@ var hasRejected = (obj, client) => {
   return false;
 }
 
+var changeStatus = (id, status) => {
+  for (var i = 0; i <= clients.length-1; i++) {
+    if (clients[i].id === id) {
+      clients[i].status = status;
+    }
+  }
+}
+
 var hasAnyDriverActivation = obj => {
   if (!Array.isArray(clients) || !clients.length) {
     return false;
@@ -97,14 +105,17 @@ var sendToNearestClient = obj => {
       }
     }
   };
-  // kick out client has been chosen to serve
+  // change status of client has been chosen to serve to 'busy'
   for (var i = 0; i <= clients.length-1; i++) {
     if (clients[i] === nestestClient) {
-      clients.splice(i, 1);
+      clients[i].status = constants.status.busy;
     }
   }
   obj.distance = Number(nestestDistance.toFixed(2));
   obj.n = obj.n + 1;
+  // driver has been chosen to serve this time
+  obj.driver = nestestClient.id;
+  // list of ids has been chosen to serve this request
   obj.ids.push(nestestClient.id);
   nestestClient.socket.send(JSON.stringify(obj));
 }
@@ -121,5 +132,6 @@ module.exports = {
   socketServer,
   broadcastAll,
   sendToNearestClient,
-  hasAnyDriverActivation
+  hasAnyDriverActivation,
+  changeStatus
 }

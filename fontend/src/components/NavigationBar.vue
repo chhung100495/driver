@@ -9,6 +9,7 @@
     <b-navbar-nav class="ml-auto">
       <b-nav-item class="mr-3">
         <el-switch
+          :disabled="disableStatus"
           v-model="active"
           @change="changeStatus"
           active-color="#13ce66"
@@ -43,6 +44,7 @@
         'active': false
       }
     },
+    props:['disableStatus'],
     mounted() {
       var self = this;
       self.$gmapApiPromiseLazy()

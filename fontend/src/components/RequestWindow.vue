@@ -45,8 +45,9 @@
       </div>
     </div>
     <div class="row">
-      <div class="btn-accept-job col-sm-4 col-md-4 offset-sm-4 offset-md-4">
-        <b-button class="btn btn-success btn-block agree" @click="acceptRequest">ĐỒNG Ý NHẬN CUỐC</b-button>
+      <div class="btn-choose col-sm-4 col-md-4 offset-sm-4 offset-md-4">
+        <b-button class="btn btn-block decline" @click="declineRequest">TỪ CHỐI</b-button>
+        <b-button class="btn btn-success btn-block agree" @click="acceptRequest">ĐỒNG Ý</b-button>
       </div>
     </div>
   </div>
@@ -89,11 +90,15 @@
         var self = this;
         self.$emit('acceptRequest', true);
       },
+      declineRequest() {
+        var self = this;
+        self.rejectRequest();
+        self.$emit('acceptRequest', false);
+      },
       rejectRequest() {
         var self = this;
         var url = 'http://localhost:3003/requests/resend';
         var objToPost = JSON.stringify(self.request);
-        console.log(self.request)
         axios({
           method: 'POST',
           url: url,
@@ -117,8 +122,8 @@
       countdown(newValue, oldValue) {
         var self = this;
         if (newValue === 0) {
-          self.rejectRequest();
-          self.$emit('acceptRequest', false);
+          // self.rejectRequest();
+          // self.$emit('acceptRequest', false);
         }
       }
     }
@@ -136,12 +141,12 @@
     color: white;
   }
 
-  .title, .timer, .content, .btn-accept-job {
+  .title, .timer, .content, .btn-choose {
     background-color: #343a40;
     padding-top: 10px;
   }
 
-  .btn-accept-job {
+  .btn-choose {
     padding-bottom: 10px;
   }
 
@@ -199,7 +204,7 @@
     font-size: 14px;
   }
 
-  .agree {
+  .agree, .decline {
     width: 100%;
     padding-left: 15px;
     padding-right: 15px;

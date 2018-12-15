@@ -1,6 +1,6 @@
 <template lang="html">
     <div>
-      <NavigationBar @changeCoordinates="getCoordinates" @driverActivation="checkActive"/>
+      <NavigationBar @changeCoordinates="getCoordinates" @driverActivation="checkActive" :disableStatus="disableStatus"/>
       <div style="position: relative">
         <gmap-map
           id="map"
@@ -9,16 +9,23 @@
           ref="gmap"
           :options="options"
           map-type-id="terrain">
-          <gmap-marker ref="markers" :position="currentPosition" :draggable="true" @dragend="changePosition">
+
+          <gmap-marker v-if="showCurrentPosition" ref="markers" :position="currentPosition" title="Vị trí hiện tại" :draggable="true" @dragend="changePosition">
+          </gmap-marker>
+
+          <gmap-marker v-if="finish.show" ref="finishMarkers" :position="finish.position" :title="finish.title" :icon="finish.finishIcon">
           </gmap-marker>
         </gmap-map>
 
         <RequestWindow v-if="showRequestWindow" :request="request" @acceptRequest="handleAcceptRequest"></RequestWindow>
-        <!-- <div class="container" v-if="request">
-          <InfoBar :request="request"/>
-        </div> -->
 
-        <FooterBar v-if="showFooterBar"/>
+        <InfoBar :stepNumber="stepNumber" v-if="showInfoBar" :request="request" @showDirection="handleShowDirection"/>
+
+        <FooterBar v-if="showFooterBar" @arrvied="handleArrvied" @zoomStartingPoint="handleZoomStartingPoint" @zoomDestination="handleZoomDestination"/>
+
+        <div v-if="showBtnInfo" class="btn-details">
+          <el-button type="primary" icon="el-icon-edit" @click="onClickBtnInfo" circle></el-button>
+        </div>
 
         <div v-if="!active" class="notification-bottom">
           <small class="alert">Bạn đang trong chế độ nghỉ ngơi, không nhận được cuốc.</small>
@@ -44,19 +51,34 @@
       FooterBar,
       RequestWindow
     },
-    data () {
+    data() {
       return {
         showRequestWindow: false,
+        showInfoBar: false,
         showFooterBar: false,
+        disableStatus: false,
+        showBtnInfo: false,
+        stepNumber: 0,
         active: false,
         distance: null,
         marker: null,
-        mapModel: null,
-        geocoder: null,
+        map: null,
+        directionsService: null,
+        directionsDisplay: null,
+        finish: {
+          position: {
+            lat: 0,
+            lng: 0
+          },
+          finishIcon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+          title: "Điểm đón khách",
+          show: false
+        },
         position: {
           lat: 0,
           lng: 0
         },
+        showCurrentPosition: true,
         currentPosition: {
           lat: 0,
           lng: 0
@@ -280,17 +302,123 @@
         self.showRequestWindow = false;
         if (args === true) {
           self.showFooterBar = true;
+          self.showInfoBar = true;
+          self.disableStatus = true;
+          self.showGuestPosition();
+        }
+      },
+      showGuestPosition() {
+        var self = this;
+        self.finish.show = true;
+        self.finish.position.lat = Number(self.request.Latitude);
+        self.finish.position.lng = Number(self.request.Longtitude);
+      },
+      handleShowDirection() {
+        var self = this;
+        self.showBtnInfo = true;
+        self.showInfoBar = false;
+        self.showCurrentPosition = false,
+        self.finish.show = false,
+        self.calculateRoutes();
+      },
+      calculateRoutes() {
+        var self = this;
+        var start = new google.maps.LatLng(self.currentPosition.lat, self.currentPosition.lng)
+        var end = new google.maps.LatLng(self.finish.position.lat, self.finish.position.lng);
+        var directionRequest = {
+          origin: start,
+          destination: end,
+          travelMode: google.maps.TravelMode.DRIVING
+        }
+        self.directionsService.route(directionRequest, function(response, status) {
+          if (status == google.maps.DirectionsStatus.OK) {
+            self.directionsDisplay.setDirections(response);
+            self.directionsDisplay.setMap(self.map)
+          } else {
+            console.log("Directions Request from " + start.toUrlValue(6) + " to " + end.toUrlValue(6) + " failed: " + status)
+          }
+        });
+      },
+      onClickBtnInfo() {
+        var self = this;
+        self.showInfoBar = true;
+        self.showBtnInfo = false;
+        self.showCurrentPosition = true,
+        self.finish.show = true,
+        // remove direction on map
+        self.directionsDisplay.setDirections({routes: []});
+      },
+      handleZoomStartingPoint() {
+        var self = this;
+        var bounds  = new google.maps.LatLngBounds();
+        var loc = new google.maps.LatLng(self.finish.position.lat, self.finish.position.lng);
+        bounds.extend(loc);
+        self.map.fitBounds(bounds);
+        self.map.panToBounds(bounds);
+        self.map.setZoom(18);
+      },
+      handleZoomDestination() {
+        var self = this;
+        var bounds  = new google.maps.LatLngBounds();
+        var loc = new google.maps.LatLng(self.finish.position.lat, self.finish.position.lng);
+        bounds.extend(loc);
+        self.map.fitBounds(bounds);
+        self.map.panToBounds(bounds);
+        self.map.setZoom(18);
+      },
+      handleArrvied(args) {
+        var self = this;
+        self.stepNumber = args;
+        // if arrvied starting point
+        if (args === 1) {
+          // change position of finish marker
+          self.finish.position.lat = Number(self.request.FinishLatitude);
+          self.finish.position.lng = Number(self.request.FinishLongtitude);
+        }
+        // if arrvied destination
+        if (args === 2) {
+          self.showInfoBar = false;
+          self.showFooterBar = false;
+          // call api to update status of request
+          var url = 'http://localhost:3003/requests/completed';
+          var objToPost = {
+            ID: self.request.ID
+          }
+          var jsonToPost = JSON.stringify(objToPost);
+          axios({
+            method: 'POST',
+            url: url,
+            headers: {'x-access-token': localStorage.access_token},
+            data: jsonToPost,
+            timeout: 10000
+          })
+          .then(res => {
+            self.$notify({
+              group: 'notification',
+              type: 'success',
+              title: 'Thông báo',
+              text: res.data.msg
+            });
+          })
+          .catch(err => {
+            console.log(err)
+          })
+          // enable button status
+          self.disableStatus = false;
         }
       }
     },
     mounted() {
       var self = this;
       self.$gmapApiPromiseLazy().then(() => {
-        self.geocoder = new google.maps.Geocoder();
+        self.directionsService = new google.maps.DirectionsService();
+        self.directionsDisplay = new google.maps.DirectionsRenderer();
         self.handlePermission();
       })
       self.marker = self.$refs.markers;
-      self.mapModel = self.$refs.gmap;
+      this.$refs.gmap.$mapPromise.then(map => {
+        self.map = map
+      });
 
       // watch object 'currentPosition' change value
       this.$watch('$data.currentPosition', this.onCurrentPositionUpdated, { deep: true })
@@ -314,5 +442,14 @@
 <style lang="css">
   #map {
     min-height: calc(100vh - 75px);
+  }
+
+  .btn-details{
+    margin: 0 auto;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    z-index: 99;
+    height: 100%;
   }
 </style>

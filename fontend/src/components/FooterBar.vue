@@ -9,11 +9,8 @@
           <i class="el-icon-message icon"></i><br>
         </b-col>
         <b-col class="right">
-          <el-switch
-            v-model="active"
-            active-color="#13ce66"
-            inactive-color="#ff4949">
-          </el-switch>
+          <i v-if="showBtnCancelRequest" class="el-icon-close icon"></i>
+          <i v-if="showBtnSupport" class="el-icon-service icon"></i>
           <br>
         </b-col>
       </b-row>
@@ -22,21 +19,22 @@
           <span class="title-icon">GỌI</span>
         </b-col>
         <b-col class="mid">
-          <span class="title-icon">TRÒ CHUYỆN</span>
+          <span class="title-icon">NHẮN TIN</span>
         </b-col>
         <b-col class="right">
-          <span class="title-icon">SẴN SÀNG</span>
+          <span v-if="showBtnCancelRequest" class="title-icon">HỦY</span>
+          <span v-if="showBtnSupport" class="title-icon">HỖ TRỢ</span>
         </b-col>
       </b-row>
       <hr style="background: #292C35; padding: 1px">
 
       <b-row class="mt-3">
         <b-col cols="8" class="left">
-          <el-button style="width: 100%; height: 100%" type="success">NHẬN CUỐC</el-button>
+          <el-button @click="onClickBtnArrived" style="width: 100%; height: 100%" type="success">{{btnArrivedText}}</el-button>
         </b-col>
         <b-col>
-          <i class="el-icon-menu icon"></i><br>
-          <span class="title-icon">THÊM</span>
+          <el-button v-if="showBtnStartingPoint" @click="onClickBtnStartingPoint" style="width: 100%; height: 100%" type="primary">ĐIỂM ĐÓN</el-button>
+          <el-button v-if="showBtnDestination" @click="onClickBtnDestination" style="width: 100%; height: 100%" type="danger">ĐIỂM TRẢ KHÁCH</el-button>
         </b-col>
       </b-row>
     </el-card>
@@ -44,7 +42,38 @@
 </template>
 
 <script>
-  export default {}
+  export default {
+    data() {
+      return {
+        showBtnStartingPoint: true,
+        showBtnDestination: false,
+        showBtnCancelRequest: true,
+        showBtnSupport: false,
+        btnArrivedText: "BẮT ĐẦU",
+        arrivedNumber: 0
+      }
+    },
+    methods: {
+      onClickBtnArrived() {
+        var self = this;
+        self.showBtnStartingPoint = false;
+        self.showBtnDestination = true;
+        self.showBtnSupport = true;
+        self.showBtnCancelRequest = false;
+        self.btnArrivedText = "KẾT THÚC";
+        self.arrivedNumber++;
+        self.$emit('arrvied', self.arrivedNumber);
+      },
+      onClickBtnStartingPoint() {
+        var self = this;
+        self.$emit('zoomStartingPoint');
+      },
+      onClickBtnDestination() {
+        var self = this;
+        self.$emit('zoomDestination');
+      }
+    }
+  }
 </script>
 
 <style lang="css">

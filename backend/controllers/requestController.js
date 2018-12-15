@@ -2,7 +2,7 @@ var express = require('express');
 var requestRepo = require('../repositories/requestRepository');
 var webSocket = require('../webSocket');
 var config = require('../config');
-var constant = require('../constants');
+var constants = require('../constants');
 
 var router = express.Router();
 
@@ -35,6 +35,10 @@ router.post('/', (req, res, next) => {
 
 router.post('/resend', (req, res, next) => {
   var request = req.body;
+
+  // change status to 'online' to able receive another request
+  webSocket.changeStatus(request.driver, constants.status.online);
+
   // 'n' is the number of resends
   if (request.n < config.n) {
     if (webSocket.hasAnyDriverActivation(request)) {
@@ -45,7 +49,7 @@ router.post('/resend', (req, res, next) => {
     })
   } else {
     // if exceeded the number of resends, change status of request to "No car"
-    requestRepo.changeStatus(request.ID, constant.status.noCar)
+    requestRepo.changeStatus(request.ID, constants.status.noCar)
       .then(value => {
         console.log(value);
         res.json({
@@ -55,6 +59,20 @@ router.post('/resend', (req, res, next) => {
       next(err);
     })
   }
+})
+
+router.post('/completed', (req, res, next) => {
+  var id = req.body.ID;
+  // update status of request to "Completed"
+  requestRepo.changeStatus(id, constants.status.completed)
+    .then(value => {
+      console.log(value);
+      res.json({
+        msg: "Chuyến đi đã hoàn thành."
+      })
+  }).catch(err => {
+    next(err);
+  })
 })
 
 module.exports = router;
