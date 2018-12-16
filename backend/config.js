@@ -7,8 +7,8 @@ module.exports = {
         database : 'booking_cars'
     },
     accessTokenSecret : "SECRET-BOOKING-CARS-TOKEN",
-    refreshTokenSecret: "SECRET-DRIVER-SYSTEM-REFRESH-TOKEN",
+    refreshTokenSecret: "SECRET-BOOKING-CARS-REFRESH-TOKEN",
     accessTokenLife: '24h',
-    refreshTokenLife: 86400,
+    refreshTokenLife: '24h',
     n: 5
 }

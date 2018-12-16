@@ -36,7 +36,7 @@
 </template>
 
 <script>
-  import axios from 'axios';
+  import axios from 'axios'
 
   export default {
     data() {
@@ -93,7 +93,7 @@
           self.$emit('driverActivation', self.active);
         })
         .catch(err => {
-          console.log(err)
+          self.handleErrors(err);
         })
       },
       changeStatus() {
@@ -124,7 +124,7 @@
           self.$emit('driverActivation', self.active);
         })
         .catch(err => {
-          console.log(err)
+          self.handleErrors(err);
         })
       }
     }

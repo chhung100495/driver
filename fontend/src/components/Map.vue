@@ -231,7 +231,7 @@
           console.log(res.data.msg);
         })
         .catch(err => {
-          console.log(err)
+          self.handleErrors(err);
         })
       },
       changePosition(marker) {
@@ -290,7 +290,7 @@
           }
         })
         .catch(err => {
-          console.log(err)
+          self.handleErrors(err);
         })
       },
       onCurrentPositionUpdated() {
@@ -401,7 +401,7 @@
             });
           })
           .catch(err => {
-            console.log(err)
+            self.handleErrors(err);
           })
           // enable button status
           self.disableStatus = false;

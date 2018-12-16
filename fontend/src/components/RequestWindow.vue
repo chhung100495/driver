@@ -110,7 +110,7 @@
           console.log(res.data.msg);
         })
         .catch(err => {
-          console.log(err)
+          self.handleErrors(err);
         })
       }
     },
@@ -122,8 +122,8 @@
       countdown(newValue, oldValue) {
         var self = this;
         if (newValue === 0) {
-          // self.rejectRequest();
-          // self.$emit('acceptRequest', false);
+          self.rejectRequest();
+          self.$emit('acceptRequest', false);
         }
       }
     }

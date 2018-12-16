@@ -8,7 +8,7 @@ var middlewares = {
         if (token) {
             jwt.verify(token, config.accessTokenSecret, (err, payload) => {
                 if (err) {
-                    res.statusCode = 403;
+                    res.statusCode = 401;
                     res.json({
                         msg: 'Invalid token',
                         error: err
@@ -19,7 +19,7 @@ var middlewares = {
                 }
             })
         } else {
-            res.statusCode = 403;
+            res.statusCode = 401;
             res.json({
                 msg: 'No token found'
             });
@@ -30,9 +30,9 @@ var middlewares = {
         if (token) {
             jwt.verify(token, config.refreshTokenSecret, (err, payload) => {
                 if (err) {
-                    res.statusCode = 403;
+                    res.statusCode = 401;
                     res.json({
-                        msg: 'Invalid token',
+                        msg: 'Invalid refresh token',
                         error: err
                     });
                 } else {
@@ -42,7 +42,7 @@ var middlewares = {
                 }
             })
         } else {
-            res.statusCode = 403;
+            res.statusCode = 401;
             res.json({
                 msg: 'No token found'
             });
