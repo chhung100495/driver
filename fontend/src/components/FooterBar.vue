@@ -33,8 +33,11 @@
           <el-button @click="onClickBtnArrived" style="width: 100%; height: 100%" type="success">{{btnArrivedText}}</el-button>
         </b-col>
         <b-col>
-          <el-button v-if="showBtnStartingPoint" @click="onClickBtnStartingPoint" style="width: 100%; height: 100%" type="primary">ĐIỂM ĐÓN</el-button>
-          <el-button v-if="showBtnDestination" @click="onClickBtnDestination" style="width: 100%; height: 100%" type="danger">ĐIỂM TRẢ KHÁCH</el-button>
+          <a v-if="showBtnStartingPoint" @click="onClickBtnStartingPoint" href="javascript:;"><i class="el-icon-location-outline icon text-light"></i><br></a>
+          <span v-if="showBtnStartingPoint" @click="onClickBtnStartingPoint" class="title-icon">ĐÓN KHÁCH</span>
+
+          <a v-if="showBtnDestination" @click="onClickBtnDestination" href="javascript:;"><i class="el-icon-location-outline icon text-light"></i><br></a>
+          <span v-if="showBtnDestination" @click="onClickBtnDestination" class="title-icon">TRẢ KHÁCH</span>
         </b-col>
       </b-row>
     </el-card>

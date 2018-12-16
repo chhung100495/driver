@@ -63,6 +63,11 @@ router.post('/resend', (req, res, next) => {
 
 router.post('/completed', (req, res, next) => {
   var id = req.body.ID;
+  var driver = req.body.driver;
+
+  // change status to 'online' to able receive another request
+  webSocket.changeStatus(driver, constants.status.online);
+
   // update status of request to "Completed"
   requestRepo.changeStatus(id, constants.status.completed)
     .then(value => {

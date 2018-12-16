@@ -30,7 +30,6 @@
     left: 0;
     background-color: black;
     height: 20px;
-  /* Rest of your styling */
   }
   .notification-bottom > .alert {
     color: white;

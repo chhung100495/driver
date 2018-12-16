@@ -3,7 +3,7 @@
     <el-card style="margin-top: 10px; background-color: #363A45; color: white">
       <div class="row">
         <div class="col-md-12">
-          <el-steps :active="stepNumber" align-center>
+          <el-steps :active="step" align-center>
             <el-step title="ĐÓN KHÁCH" :description="request.NameLocation"></el-step>
             <el-step title="TRẢ KHÁCH" :description="request.FinishLocationName"></el-step>
           </el-steps>
@@ -31,6 +31,11 @@
 
 <script>
   export default {
+    data() {
+      return {
+        step: 0
+      }
+    },
     props: [
       'request',
       'stepNumber'
@@ -39,6 +44,12 @@
       getDirection() {
         var self = this;
         self.$emit('showDirection');
+      }
+    },
+    watch: {
+      stepNumber (newValue, oldValue) {
+        var self = this;
+        self.step = newValue;
       }
     }
   }

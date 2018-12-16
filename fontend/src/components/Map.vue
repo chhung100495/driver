@@ -374,6 +374,15 @@
           // change position of finish marker
           self.finish.position.lat = Number(self.request.FinishLatitude);
           self.finish.position.lng = Number(self.request.FinishLongtitude);
+
+          if (self.showInfoBar === true && self.showBtnInfo === false) {
+            // remove direction on map
+            self.directionsDisplay.setDirections({routes: []});
+          }
+          if (self.showInfoBar === false && self.showBtnInfo === true) {
+            // direction to finish position on map
+            self.calculateRoutes();
+          }
         }
         // if arrvied destination
         if (args === 2) {
@@ -382,7 +391,8 @@
           // call api to update status of request
           var url = 'http://localhost:3003/requests/completed';
           var objToPost = {
-            ID: self.request.ID
+            ID: self.request.ID,
+            driver: self.request.driver
           }
           var jsonToPost = JSON.stringify(objToPost);
           axios({
