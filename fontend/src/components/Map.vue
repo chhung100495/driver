@@ -223,7 +223,10 @@
         axios({
           method: 'POST',
           url: url,
-          headers: {'x-access-token': localStorage.access_token},
+          headers: {
+            'x-access-token': localStorage.access_token,
+            'x-refresh-token': localStorage.refresh_token
+          },
           data: jsonToPost,
           timeout: 10000
         })
@@ -231,7 +234,7 @@
           console.log(res.data.msg);
         })
         .catch(err => {
-          self.handleErrors(err);
+          console.log(err);
         })
       },
       changePosition(marker) {
@@ -276,7 +279,10 @@
         axios({
           method: 'GET',
           url: url,
-          headers: {'x-access-token': localStorage.access_token},
+          headers: {
+            'x-access-token': localStorage.access_token,
+            'x-refresh-token': localStorage.refresh_token
+          },
           timeout: 5000
         })
         .then(res => {
@@ -290,7 +296,7 @@
           }
         })
         .catch(err => {
-          self.handleErrors(err);
+          console.log(err);
         })
       },
       onCurrentPositionUpdated() {
@@ -398,7 +404,10 @@
           axios({
             method: 'POST',
             url: url,
-            headers: {'x-access-token': localStorage.access_token},
+            headers: {
+              'x-access-token': localStorage.access_token,
+              'x-refresh-token': localStorage.refresh_token
+            },
             data: jsonToPost,
             timeout: 10000
           })
@@ -411,7 +420,7 @@
             });
           })
           .catch(err => {
-            self.handleErrors(err);
+            console.log(err);
           })
           // enable button status
           self.disableStatus = false;

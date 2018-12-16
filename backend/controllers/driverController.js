@@ -41,7 +41,11 @@ router.post('/login', (req, res, next) => {
                 driverEntity = rows[0];
 
                 var payload = {
-                    user: driverEntity
+                    user: {
+                        ID: driverEntity.ID,
+                        Username: driverEntity.Username,
+                        Password: driverEntity.Password
+                    }
                 }
                 acToken = jwt.sign(payload, config.accessTokenSecret, {
                     expiresIn: config.accessTokenLife // seconds
@@ -91,6 +95,7 @@ router.post('/logout', middlewares.verifyAccessToken, (req, res, next) => {
             console.log(value);
             res.json({
                 success: true,
+                state: "loggedOut",
                 msg: "Đăng xuất thành công.",
             })
         })
@@ -106,7 +111,11 @@ router.post('/refresh', middlewares.verifyRefreshToken, (req, res) => {
                 var driverEntity = rows[0];
 
                 var payload = {
-                    user: driverEntity
+                    user: {
+                        ID: driverEntity.ID,
+                        Username: driverEntity.Username,
+                        Password: driverEntity.Password
+                    }
                 }
                 var acToken = jwt.sign(payload, config.accessTokenSecret, {
                     expiresIn: config.accessTokenLife // seconds

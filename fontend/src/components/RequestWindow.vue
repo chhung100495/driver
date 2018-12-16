@@ -103,14 +103,17 @@
           method: 'POST',
           url: url,
           data: objToPost,
-          headers: {'x-access-token': localStorage.access_token},
+          headers: {
+            'x-access-token': localStorage.access_token,
+            'x-refresh-token': localStorage.refresh_token
+          },
           timeout: 10000
         })
         .then(res => {
           console.log(res.data.msg);
         })
         .catch(err => {
-          self.handleErrors(err);
+          console.log(err);
         })
       }
     },

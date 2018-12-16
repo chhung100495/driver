@@ -81,7 +81,10 @@
         axios({
           method: 'GET',
           url: url,
-          headers: {'x-access-token': localStorage.access_token},
+          headers: {
+            'x-access-token': localStorage.access_token,
+            'x-refresh-token': localStorage.refresh_token
+          },
           timeout: 5000
         })
         .then(res => {
@@ -93,7 +96,7 @@
           self.$emit('driverActivation', self.active);
         })
         .catch(err => {
-          self.handleErrors(err);
+          console.log(err);
         })
       },
       changeStatus() {
@@ -109,7 +112,10 @@
         axios({
           method: 'POST',
           url: url,
-          headers: {'x-access-token': localStorage.access_token},
+          headers: {
+            'x-access-token': localStorage.access_token,
+            'x-refresh-token': localStorage.refresh_token
+          },
           data: jsonToPost,
           timeout: 10000
         })
@@ -124,7 +130,7 @@
           self.$emit('driverActivation', self.active);
         })
         .catch(err => {
-          self.handleErrors(err);
+          console.log(err);
         })
       }
     }

@@ -26,9 +26,9 @@ var middlewares = {
         }
     },
     verifyRefreshToken: (req, res, next) => {
-        var token = req.headers['x-refresh-token'];
-        if (token) {
-            jwt.verify(token, config.refreshTokenSecret, (err, payload) => {
+        var rfToken = req.headers['x-refresh-token'];
+        if (rfToken) {
+            jwt.verify(rfToken, config.refreshTokenSecret, (err, payload) => {
                 if (err) {
                     res.statusCode = 401;
                     res.json({
@@ -37,14 +37,14 @@ var middlewares = {
                     });
                 } else {
                     req.payload = payload;
-                    req.rfToken = token;
+                    req.rfToken = rfToken;
                     next();
                 }
             })
         } else {
             res.statusCode = 401;
             res.json({
-                msg: 'No token found'
+                msg: 'No refresh token found'
             });
         }
     }

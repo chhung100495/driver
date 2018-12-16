@@ -10,6 +10,28 @@ Vue.use(Router)
 var router = new Router({
   routes: [
     {
+      path: '/',
+      beforeEnter: (to, from, next) => {
+        next({
+          path: '/login',
+          query: {
+            redirect: to.fullPath
+          }
+        })
+      }
+    },
+    {
+      path: '/#',
+      beforeEnter: (to, from, next) => {
+        next({
+          path: '/login',
+          query: {
+            redirect: to.fullPath
+          }
+        })
+      }
+    },
+    {
       path: '/login',
       name: 'login',
       component: Login
@@ -28,22 +50,25 @@ var router = new Router({
         axios({
           method: 'POST',
           url: url,
-          headers: {'x-access-token': localStorage.access_token},
+          headers: {
+            'x-access-token': localStorage.access_token,
+            'x-refresh-token': localStorage.refresh_token
+          },
           data: jsonToPost,
           timeout: 10000
         })
-        .then(res => {
-          console.log(res);
-          localStorage.clear();
-          next({
-            path: '/login',
-            query: {
-              redirect: to.fullPath
-            }
-          })
-        })
+        // .then(res => {
+        //   console.log(res);
+        //   localStorage.clear();
+        //   next({
+        //     path: '/login',
+        //     query: {
+        //       redirect: to.fullPath
+        //     }
+        //   })
+        // })
         .catch(err => {
-          console.log(err)
+          console.log(err);
         })
       }
     },
@@ -73,8 +98,9 @@ var router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    var token = localStorage.access_token;
-    if (typeof token === 'undefined') {
+    var acToken = localStorage.access_token;
+    var rfToken = localStorage.refresh_token;
+    if (typeof acToken === 'undefined' || typeof rfToken === 'undefined') {
       next({
         path: '/login',
         query: {
