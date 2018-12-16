@@ -5,6 +5,7 @@ module.exports = {
         completed: 4,
         busy: 5,
         rest: 8,
-        noCar: 9
+        noCar: 9,
+        received: 10
     }
 }

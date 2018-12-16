@@ -394,6 +394,8 @@
         if (args === 2) {
           self.showInfoBar = false;
           self.showFooterBar = false;
+          self.showBtnInfo = false;
+
           // call api to update status of request
           var url = 'http://localhost:3003/requests/completed';
           var objToPost = {
@@ -421,9 +423,26 @@
           })
           .catch(err => {
             console.log(err);
-          })
+          });
+
           // enable button status
           self.disableStatus = false;
+
+          // remove direction on map
+          self.directionsDisplay.setDirections({routes: []});
+
+          // remove finish marker on map
+          self.finish.show = false;
+          // show current position marker on map
+          self.showCurrentPosition = true;
+
+          // zoom and center current position of driver on map
+          var bounds  = new google.maps.LatLngBounds();
+          var loc = new google.maps.LatLng(self.currentPosition.lat, self.currentPosition.lng);
+          bounds.extend(loc);
+          self.map.fitBounds(bounds);
+          self.map.panToBounds(bounds);
+          self.map.setZoom(16);
         }
       }
     },

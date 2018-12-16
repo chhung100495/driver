@@ -88,6 +88,25 @@
     methods: {
       acceptRequest() {
         var self = this;
+        var url = 'http://localhost:3003/requests/changeStatus';
+        var objToPost = JSON.stringify(self.request);
+        axios({
+          method: 'POST',
+          url: url,
+          data: objToPost,
+          headers: {
+            'x-access-token': localStorage.access_token,
+            'x-refresh-token': localStorage.refresh_token
+          },
+          timeout: 10000
+        })
+        .then(res => {
+          console.log(res.data.msg);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+
         self.$emit('acceptRequest', true);
       },
       declineRequest() {

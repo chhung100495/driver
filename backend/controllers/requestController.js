@@ -61,6 +61,21 @@ router.post('/resend', (req, res, next) => {
   }
 })
 
+router.post('/changeStatus', (req, res, next) => {
+  var id = req.body.ID;
+  requestRepo.changeStatus(id, constants.status.received)
+      .then(value => {
+          console.log(value);
+          res.json({
+              success: true,
+              msg: "Thay đổi trạng thái thành công.",
+          })
+      })
+      .catch(err => {
+          next(err)
+      })
+});
+
 router.post('/completed', (req, res, next) => {
   var id = req.body.ID;
   var driver = req.body.driver;
