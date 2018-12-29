@@ -88,7 +88,7 @@
     methods: {
       acceptRequest() {
         var self = this;
-        var url = 'http://localhost:3003/requests/changeStatus';
+        var url = 'http://localhost:3003/requests/accepted';
         var objToPost = JSON.stringify(self.request);
         axios({
           method: 'POST',

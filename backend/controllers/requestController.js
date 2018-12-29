@@ -76,6 +76,22 @@ router.post('/changeStatus', (req, res, next) => {
       })
 });
 
+router.post('/accepted', (req, res, next) => {
+  var id = req.body.ID;
+  var driverId = req.body.driver;
+  requestRepo.updateRequest(id, constants.status.received, driverId)
+      .then(value => {
+          console.log(value);
+          res.json({
+              success: true,
+              msg: "Cập nhật request thành công.",
+          })
+      })
+      .catch(err => {
+          next(err)
+      })
+});
+
 router.post('/completed', (req, res, next) => {
   var id = req.body.ID;
   var driver = req.body.driver;
