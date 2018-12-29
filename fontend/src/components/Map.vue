@@ -53,6 +53,7 @@
     },
     data() {
       return {
+        acceptedRequest: false,
         showRequestWindow: false,
         showInfoBar: false,
         showFooterBar: false,
@@ -232,6 +233,10 @@
         })
         .then(res => {
           console.log(res.data.msg);
+
+          if (self.acceptedRequest === true) {
+            self.notifyToRequestManagement();
+          }
         })
         .catch(err => {
           console.log(err);
@@ -307,6 +312,7 @@
         var self = this;
         self.showRequestWindow = false;
         if (args === true) {
+          self.acceptedRequest = true;
           self.showFooterBar = true;
           self.showInfoBar = true;
           self.disableStatus = true;
@@ -420,6 +426,8 @@
               title: 'Thông báo',
               text: res.data.msg
             });
+
+            self.notifyToRequestManagement();
           })
           .catch(err => {
             console.log(err);

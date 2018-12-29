@@ -102,6 +102,8 @@
         })
         .then(res => {
           console.log(res.data.msg);
+
+          self.notifyToRequestManagement();
         })
         .catch(err => {
           console.log(err);
@@ -130,6 +132,8 @@
         })
         .then(res => {
           console.log(res.data.msg);
+
+          self.notifyToRequestManagement();
         })
         .catch(err => {
           console.log(err);
