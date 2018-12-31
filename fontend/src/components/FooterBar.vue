@@ -59,12 +59,25 @@
     methods: {
       onClickBtnArrived() {
         var self = this;
-        self.showBtnStartingPoint = false;
-        self.showBtnDestination = true;
-        self.showBtnSupport = true;
-        self.showBtnCancelRequest = false;
-        self.btnArrivedText = "KẾT THÚC";
+
         self.arrivedNumber++;
+
+        if (self.arrivedNumber === 1) {
+          self.showBtnStartingPoint = false;
+          self.showBtnDestination = true;
+          self.showBtnSupport = true;
+          self.showBtnCancelRequest = false;
+          self.btnArrivedText = "KẾT THÚC";
+
+          // store info stepNumber of processing request
+          localStorage.stepNumber = 1;
+        }
+        if (self.arrivedNumber === 2) {
+          // clear info processing request
+          localStorage.removeItem('processingRequest');
+          localStorage.removeItem('stepNumber');
+        }
+
         self.$emit('arrvied', self.arrivedNumber);
       },
       onClickBtnStartingPoint() {
@@ -74,6 +87,17 @@
       onClickBtnDestination() {
         var self = this;
         self.$emit('zoomDestination');
+      }
+    },
+    mounted() {
+      if (Number(localStorage.stepNumber) === 1) {
+        var self = this;
+        self.showBtnStartingPoint = false;
+        self.showBtnDestination = true;
+        self.showBtnSupport = true;
+        self.showBtnCancelRequest = false;
+        self.btnArrivedText = "KẾT THÚC";
+        self.arrivedNumber++;
       }
     }
   }

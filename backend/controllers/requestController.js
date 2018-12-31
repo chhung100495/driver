@@ -3,6 +3,7 @@ var requestRepo = require('../repositories/requestRepository');
 var webSocket = require('../webSocket');
 var config = require('../config');
 var constants = require('../constants');
+var haversineDistance = require('../fn/haversineDistance').calculate;
 
 var router = express.Router();
 
@@ -110,5 +111,22 @@ router.post('/completed', (req, res, next) => {
     next(err);
   })
 })
+
+router.get('/processingRequest', (req, res, next) => {
+  var id = req.query.id;
+  var driverId = req.query.driverId;
+  requestRepo.getProcessingRequest(id, driverId, constants.status.received)
+      .then(rows => {
+        if (rows.length > 0) {
+          rows[0].distance = Number(haversineDistance(rows[0].Latitude, rows[0].Longtitude, rows[0].FinishLatitude, rows[0].FinishLongtitude).toFixed(2));
+          res.json(rows[0]);
+        } else {
+          throw new Error("Không tìm thấy request.");
+        }
+      })
+      .catch(err => {
+          next(err)
+      })
+});
 
 module.exports = router;

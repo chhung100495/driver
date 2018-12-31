@@ -3,7 +3,13 @@ var moment = require('moment');
 
 exports.getRequestByID = function (id) {
   var sql = `SELECT req.*, sts.Name as StatusName FROM requests req JOIN status sts ON req.Status = sts.ID
-            WHERE req.ID = ${id}`
+            WHERE req.ID = ${id}`;
+  return db.load(sql)
+}
+
+exports.getProcessingRequest = function (id, driverId, status) {
+  var sql = `SELECT req.* FROM requests req JOIN status sts ON req.Status = sts.ID
+            WHERE req.ID = ${id} AND req.Driver = ${driverId} AND req.Status = ${status}`;
   return db.load(sql)
 }
 

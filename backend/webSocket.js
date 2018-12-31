@@ -111,7 +111,7 @@ var sendToNearestClient = obj => {
       clients[i].status = constants.status.busy;
     }
   }
-  obj.distance = Number(nestestDistance.toFixed(2));
+  obj.distance = Number(haversineDistance(obj.Latitude, obj.Longtitude, obj.FinishLatitude, obj.FinishLongtitude).toFixed(2));
   obj.n = obj.n + 1;
   // driver has been chosen to serve this time
   obj.driver = nestestClient.id;

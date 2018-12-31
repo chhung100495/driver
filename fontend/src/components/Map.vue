@@ -428,6 +428,9 @@
             });
 
             self.notifyToRequestManagement();
+
+            self.acceptedRequest = false;
+            self.stepNumber = 0;
           })
           .catch(err => {
             console.log(err);
@@ -452,6 +455,39 @@
           self.map.panToBounds(bounds);
           self.map.setZoom(16);
         }
+      },
+      restoreProcessingRequest() {
+        var self = this;
+        var processingRequest = localStorage.processingRequest;
+        var step = localStorage.stepNumber;
+        var id = localStorage.id;
+        if (typeof processingRequest !== 'undefined' && typeof step !== 'undefined') {
+          var url = `http://localhost:3003/requests/processingRequest?id=${processingRequest}&driverId=${id}`;
+          axios({
+            method: 'GET',
+            url: url,
+            headers: {
+              'x-access-token': localStorage.access_token,
+              'x-refresh-token': localStorage.refresh_token
+            },
+            timeout: 5000
+          })
+          .then(res => {
+            self.acceptedRequest = true;
+            self.request = res.data;
+            self.showFooterBar = true;
+            self.showInfoBar = true;
+            self.stepNumber = step;
+            self.disableStatus = true;
+            self.finish.show = true;
+            // change position of finish marker
+            self.finish.position.lat = Number(self.request.FinishLatitude);
+            self.finish.position.lng = Number(self.request.FinishLongtitude);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+        }
       }
     },
     mounted() {
@@ -466,13 +502,17 @@
         self.map = map
       });
 
+      self.restoreProcessingRequest();
+
       // watch object 'currentPosition' change value
       this.$watch('$data.currentPosition', this.onCurrentPositionUpdated, { deep: true })
     },
     watch: {
       request (newValue, oldValue) {
         var self = this;
-        self.showRequestWindow = true;
+        if (self.acceptedRequest == false) {
+          self.showRequestWindow = true;
+        }
       },
 
       active (newValue, oldValue) {

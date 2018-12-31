@@ -109,6 +109,10 @@
           console.log(err);
         });
 
+        // store info processing request
+        localStorage.processingRequest = self.request.ID;
+        localStorage.stepNumber = 0;
+
         self.$emit('acceptRequest', true);
       },
       declineRequest() {
