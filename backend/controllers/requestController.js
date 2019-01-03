@@ -4,6 +4,7 @@ var webSocket = require('../webSocket');
 var config = require('../config');
 var constants = require('../constants');
 var haversineDistance = require('../fn/haversineDistance').calculate;
+var axios = require('axios');
 
 var router = express.Router();
 
@@ -18,11 +19,50 @@ router.post('/', (req, res, next) => {
         // init list id of drivers had rejected request
         rows[0].ids = [];
         if (!webSocket.hasAnyDriverActivation(rows[0])) {
-          res.json({
-            msg: "Hiện không có tài xế để phục vụ."
+          // change status of request to "No car"
+          requestRepo.changeStatus(rows[0].ID, constants.status.noCar)
+            .then(value => {
+              res.json({
+                msg: "Hiện không có tài xế để phục vụ."
+              });
+
+              // send a notification to app #2, this request doesn't have driver to serve
+              var url = 'http://localhost:3000/refresh';
+              var objToPost = {
+                ID: rows[0].ID
+              }
+              axios({
+                method: 'POST',
+                url: url,
+                data: objToPost,
+                timeout: 10000
+              })
+              .then(res => {
+                console.log(res.data);
+              })
+              .catch(err => {
+                console.log(err);
+              })
+
+              // send a notification to app #3, this request doesn't have driver to serve
+              var url = 'http://localhost:3010/refresh';
+              var objToPost = {
+                ID: rows[0].ID
+              }
+              axios({
+                method: 'POST',
+                url: url,
+                data: objToPost,
+                timeout: 10000
+              })
+              .then(res => {
+                console.log(res.data);
+              })
+              .catch(err => {
+                console.log(err);
+              })
           })
-        }
-        else {
+        } else {
           res.json(rows[0]);
           webSocket.sendToNearestClient(rows[0]);
         }
@@ -55,6 +95,24 @@ router.post('/resend', (req, res, next) => {
         console.log(value);
         res.json({
           msg: "Server đã nhận được request."
+        })
+
+        // send a notification to app #2, this request doesn't have driver to serve
+        var url = 'http://localhost:3000/refresh';
+        var objToPost = {
+          ID: id
+        }
+        axios({
+          method: 'POST',
+          url: url,
+          data: objToPost,
+          timeout: 10000
+        })
+        .then(res => {
+          console.log(res.data);
+        })
+        .catch(err => {
+          console.log(err);
         })
     }).catch(err => {
       next(err);

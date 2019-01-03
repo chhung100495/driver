@@ -8,7 +8,7 @@ module.exports = {
     },
     accessTokenSecret : "SECRET-BOOKING-CARS-TOKEN",
     refreshTokenSecret: "SECRET-BOOKING-CARS-REFRESH-TOKEN",
-    accessTokenLife: '15m',
+    accessTokenLife: '30m',
     refreshTokenLife: '24h',
     n: 5
 }

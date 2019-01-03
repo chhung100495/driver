@@ -20,7 +20,7 @@ export default {
         timeout: 10000
       })
       .then(res => {
-        console.log(res.data.msg);
+        console.log(res.data);
       })
       .catch(err => {
         console.log(err);

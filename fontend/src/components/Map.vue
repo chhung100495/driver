@@ -317,6 +317,10 @@
           self.showInfoBar = true;
           self.disableStatus = true;
           self.showGuestPosition();
+
+          // change status of driver to 'busy' after accepted request
+          var busy = 5;
+          self.$emit('currentStatus', busy);
         }
       },
       showGuestPosition() {

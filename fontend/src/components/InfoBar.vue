@@ -3,7 +3,7 @@
     <el-card style="margin-top: 10px; background-color: #363A45; color: white">
       <div class="row">
         <div class="col-md-12">
-          <span>{{request.distance}} km</span>
+          <small>{{request.distance}} km</small>
         </div>
       </div>
       <div class="row">
@@ -59,7 +59,6 @@
     top: 5px;
     left: 0px;
     z-index: 99;
-    height: 100%;
   }
 
   .note-card .el-card__body {
