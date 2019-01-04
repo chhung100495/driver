@@ -319,8 +319,33 @@
           self.showGuestPosition();
 
           // change status of driver to 'busy' after accepted request
-          var busy = 5;
+          var busy = 7;
           self.$emit('currentStatus', busy);
+
+          // update status of driver in db
+          var url = 'http://localhost:3003/drivers/changeStatus';
+          var objToPost = {
+            ID: localStorage.id,
+            Status: busy
+          }
+          var jsonToPost = JSON.stringify(objToPost);
+          axios({
+            method: 'POST',
+            url: url,
+            headers: {
+              'x-access-token': localStorage.access_token,
+              'x-refresh-token': localStorage.refresh_token
+            },
+            data: jsonToPost,
+            timeout: 10000
+          })
+          .then(res => {
+            console.log(res.data);
+            // self.notifyToRequestManagement();
+          })
+          .catch(err => {
+            console.log(err);
+          })
         }
       },
       showGuestPosition() {
@@ -424,17 +449,40 @@
             timeout: 10000
           })
           .then(res => {
-            self.$notify({
-              group: 'notification',
-              type: 'success',
-              title: 'Thông báo',
-              text: res.data.msg
-            });
+            // update status of driver in db
+            var online = 1;
+            var url = 'http://localhost:3003/drivers/changeStatus';
+            var objToPost = {
+              ID: localStorage.id,
+              Status: online
+            }
+            var jsonToPost = JSON.stringify(objToPost);
+            axios({
+              method: 'POST',
+              url: url,
+              headers: {
+                'x-access-token': localStorage.access_token,
+                'x-refresh-token': localStorage.refresh_token
+              },
+              data: jsonToPost,
+              timeout: 10000
+            })
+            .then(res => {
+              self.notifyToRequestManagement();
 
-            self.notifyToRequestManagement();
+              self.$notify({
+                group: 'notification',
+                type: 'success',
+                title: 'Thông báo',
+                text: res.data.msg
+              });
 
-            self.acceptedRequest = false;
-            self.stepNumber = 0;
+              self.acceptedRequest = false;
+              self.stepNumber = 0;
+            })
+            .catch(err => {
+              console.log(err);
+            })
           })
           .catch(err => {
             console.log(err);
